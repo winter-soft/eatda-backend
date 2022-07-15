@@ -1,0 +1,26 @@
+server:
+  port: 8080 # 서버 포트설정
+  servlet:
+    context-path: /api # 진입점 : localhost:8080/api/
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
+
+  jpa: # jpa 설정
+    open-in-view: true # lazy Loading
+    hibernate:
+      ddl-auto: update # create:생성모드, update:업데이트모드, none: 생성,업데이트 (x)
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # 테이블을 만들때 변수명 그대로 테이블에 넣어줌.
+      use-new-id-generator-mappings: false # false: jpa가 사용하는 기본 넘버링 전략을 따라가지 않는다.
+    show-sql: true # 쿼리 보여주기
+    properties:
+      hibernate.format_sql: true # 쿼리 예쁘게 보여주기
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
