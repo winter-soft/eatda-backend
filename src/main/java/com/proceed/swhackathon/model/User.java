@@ -4,10 +4,12 @@ import lombok.Getter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "USERS", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 @Getter
+@Table(name = "USERS", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class User {
 
     @Id
