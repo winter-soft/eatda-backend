@@ -17,6 +17,10 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+### macOS ###
+# General
+.DS_Store
+
 ### IntelliJ IDEA ###
 *.yml
 .idea
@@ -36,3 +40,4 @@ out/
 
 ### VS Code ###
 .vscode/
+/src/main/java/proceed/swhackathon/test/
