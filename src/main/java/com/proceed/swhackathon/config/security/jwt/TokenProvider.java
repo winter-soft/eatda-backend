@@ -1,11 +1,11 @@
-package proceed.swhackathon.config.security.jwt;
+package com.proceed.swhackathon.config.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import proceed.swhackathon.model.User;
+import com.proceed.swhackathon.model.User;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

@@ -1,4 +1,4 @@
-package proceed.swhackathon.model;
+package com.proceed.swhackathon.model;
 
 import lombok.Getter;
 import org.hibernate.annotations.GenericGenerator;

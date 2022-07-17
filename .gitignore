@@ -40,4 +40,4 @@ out/
 
 ### VS Code ###
 .vscode/
-/src/main/java/proceed/swhackathon/test/
+/src/main/java/com/proceed/swhackathon/test/

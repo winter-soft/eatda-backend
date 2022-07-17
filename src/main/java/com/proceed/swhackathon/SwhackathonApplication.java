@@ -1,4 +1,4 @@
-package proceed.swhackathon;
+package com.proceed.swhackathon;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
