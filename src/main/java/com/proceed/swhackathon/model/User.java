@@ -1,6 +1,9 @@
 package com.proceed.swhackathon.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,6 +12,9 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "USERS", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class User {
 
@@ -26,4 +32,5 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
 }

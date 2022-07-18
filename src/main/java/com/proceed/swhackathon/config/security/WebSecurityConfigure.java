@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.config.security;
 
+import com.proceed.swhackathon.config.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.filter.CorsFilter;
 
 @Slf4j
 @EnableWebSecurity
@@ -14,7 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
 
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -36,9 +38,9 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
         // 매 요청마다
         // CorsFilter 실행한 후에
         // jwtAuthenticationFilter 실행한다.
-//        http.addFilterAfter(
-//                jwtAuthenticationFilter,
-//                CorsFilter.class
-//        );
+        http.addFilterAfter(
+                jwtAuthenticationFilter,
+                CorsFilter.class
+        );
     }
 }
