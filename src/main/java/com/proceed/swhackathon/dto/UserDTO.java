@@ -1,6 +1,7 @@
 package com.proceed.swhackathon.dto;
 
 import com.proceed.swhackathon.model.Role;
+import com.proceed.swhackathon.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,5 @@ public class UserDTO {
     private String email;
     private String username;
     private String password;
-    private Role role;
+    private Role role = Role.USER;
 }

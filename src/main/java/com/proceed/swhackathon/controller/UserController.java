@@ -4,6 +4,7 @@ import com.proceed.swhackathon.config.security.jwt.TokenProvider;
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.UserDTO;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
+import com.proceed.swhackathon.model.Role;
 import com.proceed.swhackathon.model.User;
 import com.proceed.swhackathon.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +36,7 @@ public class UserController {
                     .email(userDTO.getEmail())
                     .username(userDTO.getUsername())
                     .password(encoder.encode(userDTO.getPassword()))
-                    .role(userDTO.getRole())
+                    .role(Role.USER)
                     .build();
 
             User registerUser = userService.create(user);
