@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.service;
 
+import com.proceed.swhackathon.exception.user.UserDuplicatedException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.model.User;
 import com.proceed.swhackathon.repository.UserRepository;
@@ -19,12 +20,12 @@ public class UserService {
 
     public User create(final User userEntity){
         if(userEntity == null || userEntity.getEmail()==null){
-            throw new RuntimeException("Invalid arguments");
+            throw new UserNotFoundException();
         }
         final String email = userEntity.getEmail();
         if(userRepository.existsByEmail(email)){
             log.warn("Email already exists {}",email);
-            throw new UserNotFoundException();
+            throw new UserDuplicatedException();
         }
 
         return userRepository.save(userEntity);

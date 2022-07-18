@@ -35,12 +35,14 @@ public class UserController {
                     .email(userDTO.getEmail())
                     .username(userDTO.getUsername())
                     .password(encoder.encode(userDTO.getPassword()))
+                    .role(userDTO.getRole())
                     .build();
 
             User registerUser = userService.create(user);
             UserDTO responseUserDTO = UserDTO.builder()
                     .email(registerUser.getEmail())
                     .username(registerUser.getUsername())
+                    .role(registerUser.getRole())
                     .id(registerUser.getId())
                     .build();
 
@@ -61,6 +63,7 @@ public class UserController {
                     .token(token)
                     .email(user.getEmail())
                     .username(user.getUsername())
+                    .role(user.getRole())
                     .id(user.getId())
                     .build();
             return new ResponseDTO<>(HttpStatus.OK.value(), responseUserDTO);
