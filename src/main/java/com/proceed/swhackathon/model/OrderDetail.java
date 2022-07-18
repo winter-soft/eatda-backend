@@ -8,8 +8,8 @@ import javax.persistence.*;
 @Getter
 public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을 시켰는지
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "orderDetail_id")
     private Long id;
 
     private int quantity;

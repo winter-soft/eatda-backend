@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 public class Store {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "store_id")
     private Long id;
 
     private String name; // 매장명

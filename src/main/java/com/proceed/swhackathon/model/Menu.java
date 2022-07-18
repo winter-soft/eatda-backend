@@ -8,8 +8,8 @@ import javax.persistence.*;
 @Getter
 public class Menu {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "menu_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
