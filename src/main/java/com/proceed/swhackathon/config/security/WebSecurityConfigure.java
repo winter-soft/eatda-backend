@@ -1,13 +1,17 @@
 package com.proceed.swhackathon.config.security;
 
 import com.proceed.swhackathon.config.security.jwt.JwtAuthenticationFilter;
+import com.proceed.swhackathon.config.security.oauth.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.filter.CorsFilter;
 
 @Slf4j
@@ -15,6 +19,14 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 @Configuration
 public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private PrincipalOauth2UserService principalOauth2UserService;
+
+    @Bean //해당 메서드의 리턴되는 오브젝트를 IoC로 등록해 준다
+    public BCryptPasswordEncoder encodePwd(){
+        return new BCryptPasswordEncoder();
+    }
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -32,7 +44,12 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
                     .authorizeRequests() // "/", "/auth/**" 경로는 인증 안해도 됨
                     .antMatchers("/**").permitAll()
                     .anyRequest() // "/" , "/auth/**" 이외의 모든 경로는 인증 해야함
-                    .authenticated();
+                    .authenticated()
+                .and()
+                .oauth2Login()
+                .loginPage("/naver") //구글로그인 완료후 후처리가 필요함 엑세스토큰 + 사용자프로필정보
+                .userInfoEndpoint()
+                .userService(principalOauth2UserService);
 
         // filter 등록
         // 매 요청마다
