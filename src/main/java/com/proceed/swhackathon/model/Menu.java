@@ -1,11 +1,16 @@
 package com.proceed.swhackathon.model;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "store")
 public class Menu {
 
     @Id @GeneratedValue
@@ -14,9 +19,10 @@ public class Menu {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
+    @JsonIgnore
     private Store store;
 
     private String name;
     private String imageUrl;
-    private String price;
+    private int price;
 }

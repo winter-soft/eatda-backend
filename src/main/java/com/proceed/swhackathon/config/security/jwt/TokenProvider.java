@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.proceed.swhackathon.model.User;
 
@@ -14,7 +15,8 @@ import java.util.Date;
 @Slf4j
 @Service
 public class TokenProvider {
-    private static final String SECRET_KEY = "NMA8JPctFuna59f5";
+    @Value("${jwt.tokenProvider.secretKey}")
+    private static String SECRET_KEY;
 
     public String create(User user){
         // 기한은 지금부터 1일로 설정
