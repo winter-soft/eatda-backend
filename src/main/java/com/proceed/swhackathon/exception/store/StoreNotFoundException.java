@@ -7,6 +7,6 @@ import org.springframework.http.HttpStatus;
 public class StoreNotFoundException extends SwhackathonException {
 
     public StoreNotFoundException() {
-        super(HttpStatus.NOT_FOUND, Message.STORE_NOT_FOUND);
+        super(HttpStatus.BAD_REQUEST, Message.STORE_NOT_FOUND);
     }
 }
