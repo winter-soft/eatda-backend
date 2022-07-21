@@ -1,6 +1,7 @@
 package com.proceed.swhackathon.controller;
 
 import com.proceed.swhackathon.dto.MenuDTO;
+import com.proceed.swhackathon.dto.OrderDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.StoreDTO;
 import com.proceed.swhackathon.model.Menu;
@@ -30,31 +31,12 @@ public class StoreController {
     private final StoreService storeService;
     private final StoreRepository storeRepository;
 
-    @ApiOperation(value = "가게상세", notes = "가게상세 페이지로 가게정보, 메뉴, 좋아요수를 리턴합니다.")
-    @GetMapping("/storeDetail/{id}")
-    public ResponseDTO<?> storeDetail(@AuthenticationPrincipal String userId, @PathVariable Long id){
+    @ApiOperation(value = "가게상세", notes = "가게상세 페이지로 가게정보, 해당오더정보, 메뉴, 좋아요수를 리턴합니다.")
+    @GetMapping("/storeDetail/{orderId}")
+    public ResponseDTO<?> storeDetail(@AuthenticationPrincipal String userId, @PathVariable Long orderId){
         storeService.initialize();
-        Store store = storeService.storeDetail(id);
-        List<MenuDTO> menuDTOList = new ArrayList<>();
-        for(Menu m : store.getMenus()){
-            MenuDTO menuDTO = MenuDTO.builder()
-                    .id(m.getId())
-                    .store(m.getStore())
-                    .name(m.getName())
-                    .imageUrl(m.getImageUrl())
-                    .price(m.getPrice())
-                    .build();
-            menuDTOList.add(menuDTO);
-        }
+        OrderDTO orderDTO = storeService.storeDetail(orderId);
 
-        StoreDTO storeDTO = StoreDTO.builder()
-                .id(store.getId())
-                .name(store.getName())
-                .minOrderPrice(store.getMinOrderPrice())
-                .backgroundImageUrl(store.getBackgroundImageUrl())
-                .menus(menuDTOList)
-                .likes(store.getLikesCount())
-                .build();
-        return new ResponseDTO<>(HttpStatus.OK.value(), storeDTO);
+        return new ResponseDTO<>(HttpStatus.OK.value(), orderDTO);
     }
 }
