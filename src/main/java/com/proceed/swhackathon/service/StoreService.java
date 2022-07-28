@@ -1,16 +1,20 @@
 package com.proceed.swhackathon.service;
 
 import com.proceed.swhackathon.dto.MenuDTO;
-import com.proceed.swhackathon.dto.OrderDTO;
 import com.proceed.swhackathon.dto.StoreDTO;
+import com.proceed.swhackathon.dto.StoreDetailDTO;
+import com.proceed.swhackathon.exception.IllegalArgumentException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.model.*;
 import com.proceed.swhackathon.repository.DestinationRepository;
+import com.proceed.swhackathon.repository.OrderDetailRepository;
 import com.proceed.swhackathon.repository.OrderRepository;
 import com.proceed.swhackathon.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,7 @@ public class StoreService {
     private final DestinationRepository destinationRepository;
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
     // dummy data
     @Transactional
@@ -67,7 +72,13 @@ public class StoreService {
                 .store(s1)
                 .destination(d1)
                 .build();
-
+        OrderDetail od1 = OrderDetail.builder()
+                .quantity(10)
+                .menu(m3)
+                .order(o1)
+                .menuCheck(true)
+                .build();
+        od1.calTotalPrice();
 
         s1.addMenu(m1);
         s1.addMenu(m2);
@@ -76,48 +87,66 @@ public class StoreService {
         destinationRepository.save(d1);
         storeRepository.save(s1);
         orderRepository.save(o1);
+        orderDetailRepository.save(od1);
     }
 
-    public OrderDTO storeDetail(Long id){
+    public StoreDetailDTO storeDetail(Long id){
         Order order = orderRepository.findOrderByIdWithStore(id).orElseThrow(() -> {
             throw new OrderNotFoundException();
         });
         Store store = storeRepository.findByIdWithMenus(order.getStore().getId()).orElseThrow(()->{
             throw new StoreNotFoundException();
         });
+        List<OrderDetail> orderDetails = orderDetailRepository.findByStore(store);
 
-        List<MenuDTO> menuDTOList = new ArrayList<>();
-        for(Menu m : store.getMenus()){
-            MenuDTO menuDTO = MenuDTO.builder()
-                    .id(m.getId())
-                    .store(m.getStore())
-                    .name(m.getName())
-                    .imageUrl(m.getImageUrl())
-                    .price(m.getPrice())
-                    .build();
-            menuDTOList.add(menuDTO);
-        }
 
-        StoreDTO storeDTO = StoreDTO.builder()
-                .id(store.getId())
-                .name(store.getName())
-                .minOrderPrice(store.getMinOrderPrice())
-                .backgroundImageUrl(store.getBackgroundImageUrl())
-                .menus(menuDTOList)
-                .likes(store.getLikesCount())
-                .build();
+        List<MenuDTO> menuDTOList = MenuDTO.entityToDTO(store.getMenus());
 
-        OrderDTO orderDTO = OrderDTO.builder()
-                .id(order.getId())
-                .destination(order.getDestination())
-                .orderStatus(order.getOrderStatus())
-                .currentAmount(order.getCurrentAmount())
-                .startTime(order.getStartTime())
-                .endTime(order.getEndTime())
-                .store(storeDTO)
-                .build();
+        StoreDTO storeDTO = StoreDTO.entityToDTO(store);
+        storeDTO.setMenus(menuDTOList);
 
-        return orderDTO;
+        StoreDetailDTO storeDetailDTO = StoreDetailDTO.entityToDTO(order);
+        storeDetailDTO.setStore(storeDTO);
+        storeDetailDTO.setOrderDetails(orderDetails);
+
+        return storeDetailDTO;
     }
 
+    public Page<StoreDTO> selectAll(Pageable pageable){
+        return storeRepository
+                .findAll((org.springframework.data.domain.Pageable) pageable)
+                .map(StoreDTO::entityToDTO);
+    }
+
+    @Transactional
+    public StoreDTO update(StoreDTO storeDTO){
+        Store store = storeRepository.findById(storeDTO.getId()).orElseThrow(() -> {
+            throw new StoreNotFoundException();
+        });
+
+        store.setName(storeDTO.getName());
+        store.setMinOrderPrice(storeDTO.getMinOrderPrice());
+        store.setBackgroundImageUrl(storeDTO.getBackgroundImageUrl());
+
+        storeDTO.setLikes(store.getLikesCount());
+        storeDTO.setMenus(MenuDTO.entityToDTO(store.getMenus()));
+        return storeDTO;
+    }
+
+    @Transactional
+    public String delete(Long storeId){
+        try {
+            Store store = storeRepository.findById(storeId).orElseThrow(() -> {
+                throw new StoreNotFoundException();
+            });
+            String name = store.getName();
+            store.removeMenu();
+            for(Order o : orderRepository.findByStore(store)){ o.removeStore(); }
+            storeRepository.deleteById(storeId);
+
+            return name;
+        }catch (IllegalArgumentException e){
+            throw new IllegalArgumentException();
+        }
+    }
 }

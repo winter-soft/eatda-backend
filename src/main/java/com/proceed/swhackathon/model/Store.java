@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @ToString(exclude = "likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,6 +24,9 @@ public class Store {
     private int minOrderPrice; // 최소 주문금액
     private String backgroundImageUrl; // 배경 이미지
 
+    @Lob
+    private String infor; // 가게 정보
+
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     @Builder.Default
     @JsonIgnore
@@ -30,8 +34,16 @@ public class Store {
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     @Builder.Default
+    @JsonIgnore
     private List<Likes> likes = new ArrayList<>();
 
+    // 메뉴 삭제
+    public void removeMenu(){
+        for(Menu m : menus){
+            m.removeStore();
+        }
+        menus = null;
+    }
 
     // 메뉴 설정
     public void addMenu(Menu menu){

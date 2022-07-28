@@ -1,10 +1,7 @@
 package com.proceed.swhackathon.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.proceed.swhackathon.model.Destination;
-import com.proceed.swhackathon.model.OrderDetail;
-import com.proceed.swhackathon.model.OrderStatus;
-import com.proceed.swhackathon.model.Store;
+import com.proceed.swhackathon.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDTO {
+public class StoreDetailDTO {
     private Long id;
     private OrderStatus orderStatus; // 주문 상태
     private int currentAmount; // 현재 달성 금액
@@ -28,4 +25,15 @@ public class OrderDTO {
     private StoreDTO store;
     private Destination destination;
     private List<OrderDetail> orderDetails = new ArrayList<>();
+
+    public static StoreDetailDTO entityToDTO(Order o){
+        return StoreDetailDTO.builder()
+                .id(o.getId())
+                .destination(o.getDestination())
+                .orderStatus(o.getOrderStatus())
+                .currentAmount(o.getCurrentAmount())
+                .startTime(o.getStartTime())
+                .endTime(o.getEndTime())
+                .build();
+    }
 }

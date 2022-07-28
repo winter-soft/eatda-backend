@@ -1,6 +1,7 @@
 package com.proceed.swhackathon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proceed.swhackathon.exception.order.OrderIllegalArgumentException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -40,5 +41,19 @@ public class Order {
     @JsonIgnore
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
+    public void calCurrentAmount(int amount){
+        currentAmount += amount;
+    }
 
+    public void cancel(int amount){
+        if(currentAmount - amount < 0){
+            throw new OrderIllegalArgumentException();
+        }else{
+            currentAmount -= amount;
+        }
+    }
+
+    public void removeStore(){
+        store = null;
+    }
 }

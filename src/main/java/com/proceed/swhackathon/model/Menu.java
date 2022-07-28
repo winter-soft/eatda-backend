@@ -25,4 +25,8 @@ public class Menu {
     private String name;
     private String imageUrl;
     private int price;
+
+    public void removeStore(){
+        store = null;
+    }
 }
