@@ -13,6 +13,9 @@ import com.proceed.swhackathon.service.StoreService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Repository;
@@ -65,7 +68,12 @@ public class StoreController {
         }));
     }
 
-
+    @ApiOperation(value = "가게 여러건 조회", notes = "pageNumber=0&pageSize=10")
+    @GetMapping("/")
+    public ResponseDTO<?> selectAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
+                                                Pageable pageable){
+        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.selectAll(pageable));
+    }
 
     @ApiOperation(value = "가게정보 수정", notes = "name, minOrderPrice, backgroundImageUrl을 받는다.")
     @PostMapping("/update")

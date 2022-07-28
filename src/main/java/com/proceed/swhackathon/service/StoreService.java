@@ -13,6 +13,8 @@ import com.proceed.swhackathon.repository.OrderRepository;
 import com.proceed.swhackathon.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,6 +110,12 @@ public class StoreService {
         storeDetailDTO.setOrderDetails(orderDetails);
 
         return storeDetailDTO;
+    }
+
+    public Page<StoreDTO> selectAll(Pageable pageable){
+        return storeRepository
+                .findAll((org.springframework.data.domain.Pageable) pageable)
+                .map(StoreDTO::entityToDTO);
     }
 
     @Transactional
