@@ -37,9 +37,7 @@ public class StoreController {
     @GetMapping("/storeDetail/{orderId}")
     public ResponseDTO<?> storeDetail(@PathVariable Long orderId){
         storeService.initialize();
-
         StoreDetailDTO storeDetailDTO = storeService.storeDetail(orderId);
-
 
         return new ResponseDTO<>(HttpStatus.OK.value(), storeDetailDTO);
     }
@@ -47,17 +45,7 @@ public class StoreController {
     @ApiOperation(value = "가게등록", notes = "매장명, 최소주문금액, 배경 이미지를 넣어 가게 정보 등록")
     @PostMapping("/insert")
     public ResponseDTO<?> insert(StoreDTO storeDTO){
-        Store store = Store.builder()
-                .name(storeDTO.getName())
-                .minOrderPrice(storeDTO.getMinOrderPrice())
-                .backgroundImageUrl(storeDTO.getBackgroundImageUrl())
-                .build();
-
-        try {
-            return new ResponseDTO<>(HttpStatus.OK.value(), storeRepository.save(store));
-        }catch(IllegalArgumentException e){
-            throw new IllegalArgumentException();
-        }
+        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.insert(storeDTO));
     }
 
     @ApiOperation(value = "가게 한건 조회", notes = "{id}를 통해 가게를 조회한다.")
@@ -75,7 +63,7 @@ public class StoreController {
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.selectAll(pageable));
     }
 
-    @ApiOperation(value = "가게정보 수정", notes = "name, minOrderPrice, backgroundImageUrl을 받는다.")
+    @ApiOperation(value = "가게정보 수정", notes = "id, name, minOrderPrice, backgroundImageUrl, category, infor을 받는다.")
     @PostMapping("/update")
     public ResponseDTO<?> update(@RequestBody StoreDTO storeDTO){
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.update(storeDTO));
