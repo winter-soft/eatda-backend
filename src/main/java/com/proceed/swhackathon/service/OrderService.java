@@ -14,6 +14,8 @@ import com.proceed.swhackathon.repository.OrderRepository;
 import com.proceed.swhackathon.repository.StoreRepository;
 import com.proceed.swhackathon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,16 @@ public class OrderService {
         }));
         order.setStore(store);
         return OrderDTO.entityToDTO(orderRepository.save(order));
+    }
+
+    public OrderDTO select(Long orderId){
+        return OrderDTO.entityToDTO(orderRepository.findById(orderId).orElseThrow(()->{
+            throw new OrderNotFoundException();
+        }));
+    }
+
+    public Page<OrderDTO> selectAll(Pageable pageable){
+        return orderRepository.findAll(pageable).map(OrderDTO::entityToDTO);
     }
 
     @Transactional

@@ -11,6 +11,9 @@ import com.proceed.swhackathon.service.OrderService;
 import com.proceed.swhackathon.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +41,18 @@ public class OrderController {
                                        @PathVariable Long orderId){
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 orderService.updateStatus(userId, orderId, orderStatus.getOrderStatus()));
+    }
+
+    @ApiOperation(value = "가게주문 한건 조회", notes = "")
+    @GetMapping("/{orderId}")
+    public ResponseDTO<?> select(@PathVariable Long orderId){
+        return new ResponseDTO<>(HttpStatus.OK.value(), orderService.select(orderId));
+    }
+
+    @ApiOperation(value = "가게주문 조회", notes = "")
+    @GetMapping("/")
+    public ResponseDTO<?> selectAll(@PageableDefault(sort = "currentAmount",direction = Sort.Direction.DESC)
+                                    Pageable pageable){
+        return new ResponseDTO<>(HttpStatus.OK.value(), orderService.selectAll(pageable));
     }
 }
