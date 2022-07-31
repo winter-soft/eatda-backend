@@ -16,7 +16,7 @@ import java.util.Date;
 @Service
 public class TokenProvider {
     @Value("${jwt.tokenProvider.secretKey}")
-    private static String SECRET_KEY;
+    private String SECRET_KEY;
 
     public String create(User user){
         // 기한은 지금부터 1일로 설정

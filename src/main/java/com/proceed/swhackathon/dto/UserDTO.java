@@ -18,4 +18,14 @@ public class UserDTO {
     private String username;
     private String password;
     private Role role = Role.USER;
+
+    public static UserDTO entityToDTO(User user){
+        return UserDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .role(user.getRole())
+                .build();
+    }
 }
