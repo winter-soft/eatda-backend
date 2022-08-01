@@ -2,6 +2,7 @@ package com.proceed.swhackathon.dto.store;
 
 import com.proceed.swhackathon.dto.menu.MenuDTO;
 import com.proceed.swhackathon.model.Category;
+import com.proceed.swhackathon.model.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +21,14 @@ public class StoreUpdateDTO {
     private String backgroundImageUrl; // 배경 이미지
     private Category category;
     private String infor;
+
+    public static StoreUpdateDTO entityToDTO(Store s){
+        return StoreUpdateDTO.builder()
+                .name(s.getName())
+                .minOrderPrice(s.getMinOrderPrice())
+                .backgroundImageUrl(s.getBackgroundImageUrl())
+                .category(s.getCategory())
+                .infor(s.getInfor())
+                .build();
+    }
 }

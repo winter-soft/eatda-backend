@@ -21,8 +21,13 @@ public class LikesController {
     @ApiOperation(value = "사용자,가게별 좋아요", notes = "좋아요를 이미 했으면 삭제, 아니라면 추가")
     @GetMapping("/{storeId}")
     public ResponseDTO<?> clickLikes(@AuthenticationPrincipal String userId,
-                                     @PathVariable Long storeId){
-        likesService.clickLikes(userId, storeId);
-        return new ResponseDTO<>(HttpStatus.OK.value(), "좋아요 완료");
+                                     @PathVariable Long storeId) {
+        return new ResponseDTO<>(HttpStatus.OK.value(), likesService.clickLikes(userId, storeId));
+    }
+
+    @ApiOperation(value = "사용자 좋아요 목록", notes = "")
+    @GetMapping("/")
+    public ResponseDTO<?> likesList(@AuthenticationPrincipal String userId) {
+        return new ResponseDTO<>(HttpStatus.OK.value(), likesService.likesList(userId));
     }
 }
