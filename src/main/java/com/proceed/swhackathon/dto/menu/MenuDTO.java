@@ -1,4 +1,4 @@
-package com.proceed.swhackathon.dto;
+package com.proceed.swhackathon.dto.menu;
 
 import com.proceed.swhackathon.model.Menu;
 import com.proceed.swhackathon.model.Store;
@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.List;
 

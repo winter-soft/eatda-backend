@@ -1,4 +1,4 @@
-package com.proceed.swhackathon.dto;
+package com.proceed.swhackathon.dto.user;
 
 import com.proceed.swhackathon.model.Role;
 import com.proceed.swhackathon.model.User;

@@ -1,15 +1,15 @@
-package com.proceed.swhackathon.dto;
+package com.proceed.swhackathon.dto.store;
 
+import com.proceed.swhackathon.dto.menu.MenuDTO;
 import com.proceed.swhackathon.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -34,6 +34,7 @@ public class StoreDTO {
                 .category(s.getCategory())
                 .infor(s.getInfor())
                 .backgroundImageUrl(s.getBackgroundImageUrl())
+                .menus(s.getMenus().stream().map(MenuDTO::entityToDTO).collect(Collectors.toList()))
                 .likes(s.getLikesCount())
                 .build();
     }

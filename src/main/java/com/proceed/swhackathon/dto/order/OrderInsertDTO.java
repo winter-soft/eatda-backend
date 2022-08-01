@@ -1,9 +1,7 @@
-package com.proceed.swhackathon.dto;
+package com.proceed.swhackathon.dto.order;
 
-import com.proceed.swhackathon.model.Destination;
 import com.proceed.swhackathon.model.Order;
 import com.proceed.swhackathon.model.OrderStatus;
-import com.proceed.swhackathon.model.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

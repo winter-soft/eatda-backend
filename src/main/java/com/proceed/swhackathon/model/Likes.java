@@ -1,11 +1,14 @@
 package com.proceed.swhackathon.model;
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Likes {
 
     @Id @GeneratedValue
@@ -19,4 +22,12 @@ public class Likes {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
+
+    public void addLike(){
+        this.store.addLike(this);
+    }
+
+    public void deleteLike(){
+        this.store.deleteLike(this);
+    }
 }

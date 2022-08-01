@@ -17,4 +17,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("select o from Order o where o.store = :store")
     List<Order> findByStore(Store store);
+
 }

@@ -1,13 +1,11 @@
 package com.proceed.swhackathon.controller;
 
-import com.proceed.swhackathon.dto.MenuDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
-import com.proceed.swhackathon.dto.StoreDTO;
-import com.proceed.swhackathon.dto.StoreDetailDTO;
-import com.proceed.swhackathon.exception.IllegalArgumentException;
+import com.proceed.swhackathon.dto.store.StoreDTO;
+import com.proceed.swhackathon.dto.store.StoreDetailDTO;
+import com.proceed.swhackathon.dto.store.StoreInsertDTO;
+import com.proceed.swhackathon.dto.store.StoreUpdateDTO;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
-import com.proceed.swhackathon.model.Menu;
-import com.proceed.swhackathon.model.Store;
 import com.proceed.swhackathon.repository.StoreRepository;
 import com.proceed.swhackathon.service.StoreService;
 import io.swagger.annotations.ApiOperation;
@@ -18,11 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -44,7 +38,7 @@ public class StoreController {
 
     @ApiOperation(value = "가게등록", notes = "매장명, 최소주문금액, 배경 이미지를 넣어 가게 정보 등록")
     @PostMapping("/insert")
-    public ResponseDTO<?> insert(StoreDTO storeDTO){
+    public ResponseDTO<?> insert(StoreInsertDTO storeDTO){
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.insert(storeDTO));
     }
 
@@ -64,14 +58,16 @@ public class StoreController {
     }
 
     @ApiOperation(value = "가게정보 수정", notes = "id, name, minOrderPrice, backgroundImageUrl, category, infor을 받는다.")
-    @PostMapping("/update")
-    public ResponseDTO<?> update(@RequestBody StoreDTO storeDTO){
-        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.update(storeDTO));
+    @PostMapping("/update/{storeId}")
+    public ResponseDTO<?> update(@AuthenticationPrincipal String userId,
+                                 @PathVariable Long storeId,
+                                 @RequestBody StoreUpdateDTO storeDTO){
+        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.update(userId, storeId, storeDTO));
     }
 
     @ApiOperation(value = "가게정보 삭제", notes = "storeId를 받아서 가게정보를 삭제한다.")
     @GetMapping("/delete/{storeId}")
-    public ResponseDTO<?> delete(@PathVariable Long storeId){
-        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.delete(storeId)+"이(가) 삭제 되었습니다.");
+    public ResponseDTO<?> delete(@AuthenticationPrincipal String userId, @PathVariable Long storeId){
+        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.delete(userId, storeId)+"이(가) 삭제 되었습니다.");
     }
 }

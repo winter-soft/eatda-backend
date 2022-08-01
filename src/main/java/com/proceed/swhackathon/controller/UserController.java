@@ -2,7 +2,9 @@ package com.proceed.swhackathon.controller;
 
 import com.proceed.swhackathon.config.security.jwt.TokenProvider;
 import com.proceed.swhackathon.dto.ResponseDTO;
-import com.proceed.swhackathon.dto.UserDTO;
+import com.proceed.swhackathon.dto.user.UserDTO;
+import com.proceed.swhackathon.dto.user.UserLoginDTO;
+import com.proceed.swhackathon.dto.user.UserRegisterDTO;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.model.Role;
 import com.proceed.swhackathon.model.User;
@@ -13,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.service.MediaTypes;
 
 @Slf4j
 @RestController
@@ -27,7 +28,7 @@ public class UserController {
 
     @PostMapping(value = "/signup")
     @ApiOperation(value = "회원가입", notes = "UserDTO 객체로 받아 유저를 등록합니다.")
-    public ResponseDTO<?> registerUser(@RequestBody UserDTO userDTO){
+    public ResponseDTO<?> registerUser(@RequestBody UserRegisterDTO userDTO){
         try {
             User user = User.builder()
                     .email(userDTO.getEmail())
@@ -52,7 +53,7 @@ public class UserController {
 
     @PostMapping("/signin")
     @ApiOperation(value = "로그인", notes = "UserDTO 객체로 email과 password를 받아 로그인을 진행하고, token을 리턴합니다.")
-    public ResponseDTO<?> authenticate(@RequestBody UserDTO userDTO){
+    public ResponseDTO<?> authenticate(@RequestBody UserLoginDTO userDTO){
         User user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), encoder);
 
         if(user != null){

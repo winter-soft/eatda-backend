@@ -1,16 +1,17 @@
 package com.proceed.swhackathon.service;
 
-import com.proceed.swhackathon.dto.MenuDTO;
-import com.proceed.swhackathon.dto.StoreDTO;
-import com.proceed.swhackathon.dto.StoreDetailDTO;
+import com.proceed.swhackathon.dto.menu.MenuDTO;
+import com.proceed.swhackathon.dto.store.StoreDTO;
+import com.proceed.swhackathon.dto.store.StoreDetailDTO;
+import com.proceed.swhackathon.dto.store.StoreInsertDTO;
+import com.proceed.swhackathon.dto.store.StoreUpdateDTO;
 import com.proceed.swhackathon.exception.IllegalArgumentException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
+import com.proceed.swhackathon.exception.user.UserNotFoundException;
+import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
 import com.proceed.swhackathon.model.*;
-import com.proceed.swhackathon.repository.DestinationRepository;
-import com.proceed.swhackathon.repository.OrderDetailRepository;
-import com.proceed.swhackathon.repository.OrderRepository;
-import com.proceed.swhackathon.repository.StoreRepository;
+import com.proceed.swhackathon.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static com.proceed.swhackathon.service.UserService.isBoss;
 
 @Slf4j
 @Service
@@ -29,6 +30,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class StoreService {
 
+    private final UserRepository userRepository;
     private final DestinationRepository destinationRepository;
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
@@ -114,7 +116,7 @@ public class StoreService {
         return storeDetailDTO;
     }
 
-    public StoreDTO insert(StoreDTO storeDTO){
+    public StoreDTO insert(StoreInsertDTO storeDTO){
         Store store = Store.builder()
                 .name(storeDTO.getName())
                 .minOrderPrice(storeDTO.getMinOrderPrice())
@@ -137,8 +139,13 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreDTO update(StoreDTO storeDTO){
-        Store store = storeRepository.findById(storeDTO.getId()).orElseThrow(() -> {
+    public StoreDTO update(String userId, Long storeId, StoreUpdateDTO storeDTO){
+        // 사장인지 체크
+        isBoss(userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        }));
+
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> {
             throw new StoreNotFoundException();
         });
 
@@ -148,14 +155,16 @@ public class StoreService {
         store.setCategory(storeDTO.getCategory());
         store.setInfor(storeDTO.getInfor());
 
-        storeDTO.setLikes(store.getLikesCount());
-        storeDTO.setMenus(MenuDTO.entityToDTO(store.getMenus()));
-        return storeDTO;
+        return StoreDTO.entityToDTO(store);
     }
 
     @Transactional
-    public String delete(Long storeId){
+    public String delete(String userId, Long storeId){
         try {
+            // 사장인지 체크
+            isBoss(userRepository.findById(userId).orElseThrow(() -> {
+                throw new UserNotFoundException();
+            }));
             Store store = storeRepository.findById(storeId).orElseThrow(() -> {
                 throw new StoreNotFoundException();
             });
@@ -169,4 +178,5 @@ public class StoreService {
             throw new IllegalArgumentException();
         }
     }
+
 }
