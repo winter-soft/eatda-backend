@@ -1,6 +1,6 @@
 package com.proceed.swhackathon.service;
 
-import com.proceed.swhackathon.dto.UserDTO;
+import com.proceed.swhackathon.dto.user.UserDTO;
 import com.proceed.swhackathon.exception.user.UserDuplicatedException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.model.User;

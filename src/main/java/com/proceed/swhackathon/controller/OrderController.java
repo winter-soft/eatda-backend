@@ -1,14 +1,9 @@
 package com.proceed.swhackathon.controller;
 
-import com.proceed.swhackathon.dto.OrderDTO;
-import com.proceed.swhackathon.dto.OrderInsertDTO;
-import com.proceed.swhackathon.dto.OrderStatusDTO;
+import com.proceed.swhackathon.dto.order.OrderInsertDTO;
+import com.proceed.swhackathon.dto.order.OrderStatusDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
-import com.proceed.swhackathon.model.OrderStatus;
-import com.proceed.swhackathon.model.User;
-import com.proceed.swhackathon.repository.UserRepository;
 import com.proceed.swhackathon.service.OrderService;
-import com.proceed.swhackathon.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +12,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")

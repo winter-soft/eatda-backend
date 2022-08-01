@@ -1,13 +1,11 @@
-package com.proceed.swhackathon.dto;
+package com.proceed.swhackathon.dto.store;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.proceed.swhackathon.dto;
+package com.proceed.swhackathon.dto.order;
 
 import com.proceed.swhackathon.model.Destination;
 import com.proceed.swhackathon.model.Order;
@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data

@@ -1,6 +1,7 @@
 package com.proceed.swhackathon.service;
 
-import com.proceed.swhackathon.dto.OrderDetailDTO;
+import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
+import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
 import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
@@ -16,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -30,7 +34,7 @@ public class OrderDetailService {
     public OrderDetailDTO insertOrderDeatil(String userId,
                                             Long orderId,
                                             Long menuId,
-                                            OrderDetailDTO orderDetailDTO){
+                                            OrderDetailInsertDTO orderDetailDTO){
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
@@ -41,12 +45,28 @@ public class OrderDetailService {
             throw new MenuNotFoundException();
         });
 
-        OrderDetail orderDetail = orderDetailDTO.dtoToEntity();
+        OrderDetail orderDetail = OrderDetail.builder()
+                .quantity(orderDetailDTO.getQuantity())
+                .build();
         orderDetail.setUser(user);
         orderDetail.setOrder(order);
         orderDetail.setMenu(menu);
         orderDetail.calTotalPrice();
 
         return OrderDetailDTO.entityToDTO(orderDetailRepository.save(orderDetail));
+    }
+
+    public List<OrderDetailDTO> selectCart(String userId, Long orderId){
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+            throw new OrderNotFoundException();
+        });
+
+        return orderDetailRepository.findByUserAndOrder(user, order)
+                .stream()
+                .map(OrderDetailDTO::entityToDTO)
+                .collect(Collectors.toList());
     }
 }
