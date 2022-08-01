@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.proceed.swhackathon.service.UserService.isBoss;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -177,9 +179,5 @@ public class StoreService {
         }
     }
 
-    // 사장인지 체크
-    private void isBoss(User user){
-        if(user.getRole() != Role.BOSS)
-            throw new UserUnAuthorizedException();
-    }
+
 }

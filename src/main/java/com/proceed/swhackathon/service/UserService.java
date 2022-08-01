@@ -3,6 +3,8 @@ package com.proceed.swhackathon.service;
 import com.proceed.swhackathon.dto.user.UserDTO;
 import com.proceed.swhackathon.exception.user.UserDuplicatedException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
+import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
+import com.proceed.swhackathon.model.Role;
 import com.proceed.swhackathon.model.User;
 import com.proceed.swhackathon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,5 +48,11 @@ public class UserService {
             return originalUser;
         }
         return null;
+    }
+
+    // 사장인지 체크
+    public static void isBoss(User user){
+        if(user.getRole() != Role.BOSS)
+            throw new UserUnAuthorizedException();
     }
 }

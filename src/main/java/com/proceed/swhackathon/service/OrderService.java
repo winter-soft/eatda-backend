@@ -18,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.proceed.swhackathon.service.UserService.isBoss;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -56,12 +58,10 @@ public class OrderService {
     public OrderDTO updateStatus(String userId,
                                  Long orderId,
                                  OrderStatus orderStatus){
-        User user = userRepository.findById(userId).orElseThrow(() -> {
+        // 사장인지 체크
+        isBoss(userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
-        });
-        if(user.getRole() != Role.BOSS){ // 사장이 아니라면 변경할 수 없다.
-            throw new UserUnAuthorizedException();
-        }
+        }));
 
         Order order = orderRepository.findById(orderId).orElseThrow(() -> {
             throw new OrderNotFoundException();
@@ -73,4 +73,6 @@ public class OrderService {
         // Order -> OrderDTO
         return OrderDTO.entityToDTO(order);
     }
+
+
 }
