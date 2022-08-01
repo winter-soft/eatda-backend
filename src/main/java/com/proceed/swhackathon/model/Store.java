@@ -23,6 +23,8 @@ public class Store {
     private String name; // 매장명
     private int minOrderPrice; // 최소 주문금액
     private String backgroundImageUrl; // 배경 이미지
+    @Enumerated(EnumType.STRING)
+    private Category category; // 매장 카테고리
 
     @Lob
     private String infor; // 가게 정보

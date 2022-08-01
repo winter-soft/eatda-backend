@@ -44,6 +44,8 @@ public class StoreService {
                 .name("단대앞분식")
                 .minOrderPrice(12000)
                 .backgroundImageUrl("https://naver.com/")
+                .category(Category.HAMBURGER)
+                .infor("안녕하세요. 오전 10시부터 오후 5시까지 운영합니다.")
                 .build();
         Menu m1 = Menu.builder()
                 .name("엄마 손맛 떡볶이")
@@ -112,6 +114,22 @@ public class StoreService {
         return storeDetailDTO;
     }
 
+    public StoreDTO insert(StoreDTO storeDTO){
+        Store store = Store.builder()
+                .name(storeDTO.getName())
+                .minOrderPrice(storeDTO.getMinOrderPrice())
+                .backgroundImageUrl(storeDTO.getBackgroundImageUrl())
+                .category(storeDTO.getCategory())
+                .infor(storeDTO.getInfor())
+                .build();
+
+        try {
+            return StoreDTO.entityToDTO(storeRepository.save(store));
+        }catch(IllegalArgumentException e){
+            throw new IllegalArgumentException();
+        }
+    }
+
     public Page<StoreDTO> selectAll(Pageable pageable){
         return storeRepository
                 .findAll((org.springframework.data.domain.Pageable) pageable)
@@ -127,6 +145,8 @@ public class StoreService {
         store.setName(storeDTO.getName());
         store.setMinOrderPrice(storeDTO.getMinOrderPrice());
         store.setBackgroundImageUrl(storeDTO.getBackgroundImageUrl());
+        store.setCategory(storeDTO.getCategory());
+        store.setInfor(storeDTO.getInfor());
 
         storeDTO.setLikes(store.getLikesCount());
         storeDTO.setMenus(MenuDTO.entityToDTO(store.getMenus()));

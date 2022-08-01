@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.service;
 
+import com.proceed.swhackathon.dto.UserDTO;
 import com.proceed.swhackathon.exception.user.UserDuplicatedException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.model.User;
@@ -29,6 +30,13 @@ public class UserService {
         }
 
         return userRepository.save(userEntity);
+    }
+
+    public UserDTO findById(final String userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+        return UserDTO.entityToDTO(user);
     }
 
     public User getByCredentials(final String email, final String password,final BCryptPasswordEncoder encoder){
