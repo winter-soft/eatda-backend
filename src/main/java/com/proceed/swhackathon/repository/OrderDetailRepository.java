@@ -1,9 +1,6 @@
 package com.proceed.swhackathon.repository;
 
-import com.proceed.swhackathon.model.Order;
-import com.proceed.swhackathon.model.OrderDetail;
-import com.proceed.swhackathon.model.Store;
-import com.proceed.swhackathon.model.User;
+import com.proceed.swhackathon.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +15,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
 
     @Query("select od from OrderDetail od where od.user = :user and od.order = :order")
     List<OrderDetail> findByUserAndOrder(User user, Order order);
+
+    @Query("select od from OrderDetail od where od.menu = :menu")
+    List<OrderDetail> findByMenu(Menu menu);
 }

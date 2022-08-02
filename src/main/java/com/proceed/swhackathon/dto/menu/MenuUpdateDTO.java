@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuUpdateDTO {
-    private Long id;
     private String name;
     private String imageUrl;
     private int price;
