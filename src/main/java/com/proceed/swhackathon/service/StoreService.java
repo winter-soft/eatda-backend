@@ -4,12 +4,10 @@ import com.proceed.swhackathon.dto.menu.MenuDTO;
 import com.proceed.swhackathon.dto.store.StoreDTO;
 import com.proceed.swhackathon.dto.store.StoreDetailDTO;
 import com.proceed.swhackathon.dto.store.StoreInsertDTO;
-import com.proceed.swhackathon.dto.store.StoreUpdateDTO;
 import com.proceed.swhackathon.exception.IllegalArgumentException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
-import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
 import com.proceed.swhackathon.model.*;
 import com.proceed.swhackathon.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -139,7 +137,7 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreDTO update(String userId, Long storeId, StoreUpdateDTO storeDTO){
+    public StoreDTO update(String userId, Long storeId, StoreInsertDTO storeDTO){
         // 사장인지 체크
         isBoss(userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();

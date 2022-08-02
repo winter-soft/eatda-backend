@@ -1,10 +1,8 @@
 package com.proceed.swhackathon.controller;
 
 import com.proceed.swhackathon.dto.ResponseDTO;
-import com.proceed.swhackathon.dto.store.StoreDTO;
 import com.proceed.swhackathon.dto.store.StoreDetailDTO;
 import com.proceed.swhackathon.dto.store.StoreInsertDTO;
-import com.proceed.swhackathon.dto.store.StoreUpdateDTO;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.repository.StoreRepository;
 import com.proceed.swhackathon.service.StoreService;
@@ -61,7 +59,7 @@ public class StoreController {
     @PostMapping("/update/{storeId}")
     public ResponseDTO<?> update(@AuthenticationPrincipal String userId,
                                  @PathVariable Long storeId,
-                                 @RequestBody StoreUpdateDTO storeDTO){
+                                 @RequestBody StoreInsertDTO storeDTO){
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.update(userId, storeId, storeDTO));
     }
 
