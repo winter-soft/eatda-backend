@@ -29,7 +29,7 @@ public class Store {
     @Lob
     private String infor; // 가게 정보
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "store")
     @Builder.Default
     @JsonIgnore
     private List<Menu> menus = new ArrayList<>();

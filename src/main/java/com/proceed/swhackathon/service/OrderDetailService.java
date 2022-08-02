@@ -31,7 +31,7 @@ public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
 
     @Transactional
-    public OrderDetailDTO insertOrderDeatil(String userId,
+    public OrderDetailDTO insertOrderDetail(String userId,
                                             Long orderId,
                                             Long menuId,
                                             OrderDetailInsertDTO orderDetailDTO){
@@ -49,7 +49,6 @@ public class OrderDetailService {
                 .quantity(orderDetailDTO.getQuantity())
                 .build();
         orderDetail.setUser(user);
-        orderDetail.setOrder(order);
         orderDetail.setMenu(menu);
         orderDetail.calTotalPrice();
 

@@ -28,7 +28,7 @@ public class StoreController {
     @ApiOperation(value = "가게상세", notes = "주문번호를 받아,  가게상세 페이지로 가게정보, 해당오더정보, 메뉴, 좋아요수를 리턴합니다.")
     @GetMapping("/storeDetail/{orderId}")
     public ResponseDTO<?> storeDetail(@PathVariable Long orderId){
-        storeService.initialize();
+//        storeService.initialize();
         StoreDetailDTO storeDetailDTO = storeService.storeDetail(orderId);
 
         return new ResponseDTO<>(HttpStatus.OK.value(), storeDetailDTO);

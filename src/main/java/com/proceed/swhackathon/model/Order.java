@@ -39,7 +39,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<OrderDetail> orderDetails = new ArrayList<>();
+    private List<UserOrderDetail> userOrderDetails = new ArrayList<>();
 
     public void calCurrentAmount(int amount){
         currentAmount += amount;

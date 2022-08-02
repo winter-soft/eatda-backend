@@ -1,7 +1,9 @@
 package com.proceed.swhackathon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -18,6 +20,7 @@ public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을
 
     private int quantity;
     private int totalPrice;
+    @ColumnDefault(value = "true")
     private boolean menuCheck; // true면 체크, false은 체크해제
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,7 +28,13 @@ public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userOrderDetail_id")
+    @JsonIgnore
+    private UserOrderDetail userOrderDetail;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,17 +43,11 @@ public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을
 
     public void calTotalPrice(){
         totalPrice = menu.getPrice() * quantity;
-        order.calCurrentAmount(totalPrice);
-    }
-
-    public void cancel(){
-        if(order == null){
-            throw new OrderNotFoundException();
-        }
-        order.cancel(totalPrice);
+        userOrderDetail.calTotalPrice();
     }
 
     public void triggerCheck(){
         menuCheck = menuCheck ? false : true;
+        userOrderDetail.calTotalPrice();
     }
 }

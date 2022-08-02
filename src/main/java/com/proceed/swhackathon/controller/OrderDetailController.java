@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orderDeatil")
+@RequestMapping("/orderDetail")
 public class OrderDetailController {
 
     private final OrderDetailService orderDetailService;
@@ -24,7 +24,7 @@ public class OrderDetailController {
                                             @PathVariable Long menuId,
                                             @RequestBody OrderDetailInsertDTO orderDetailDTO){
         return new ResponseDTO<>(HttpStatus.OK.value(),
-                orderDetailService.insertOrderDeatil(userId, orderId, menuId, orderDetailDTO));
+                orderDetailService.insertOrderDetail(userId, orderId, menuId, orderDetailDTO));
     }
 
     @ApiOperation(value = "사용자별 장바구니 조회", notes = "")

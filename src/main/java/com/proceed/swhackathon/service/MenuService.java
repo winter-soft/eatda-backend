@@ -1,7 +1,10 @@
 package com.proceed.swhackathon.service;
 
 import com.proceed.swhackathon.dto.menu.MenuInsertDTO;
+import com.proceed.swhackathon.dto.menu.MenuUpdateDTO;
 import com.proceed.swhackathon.dto.store.StoreDTO;
+import com.proceed.swhackathon.exception.IllegalArgumentException;
+import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.model.Menu;
@@ -42,6 +45,34 @@ public class MenuService {
         menu.setStore(store);
 
         menuRepository.save(menu);
+
+        return StoreDTO.entityToDTO(store);
+    }
+
+    @Transactional
+    public StoreDTO updateMenu(String userId, Long storeId, MenuUpdateDTO menuDTO){
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+
+        // 사장인지 체크
+        isBoss(user);
+
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> {
+            throw new StoreNotFoundException();
+        });
+
+        Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(() -> {
+            throw new MenuNotFoundException();
+        });
+
+        if(store != menu.getStore()){
+            throw new IllegalArgumentException();
+        }
+
+        menu.setName(menuDTO.getName());
+        menu.setPrice(menuDTO.getPrice());
+        menu.setImageUrl(menuDTO.getImageUrl());
 
         return StoreDTO.entityToDTO(store);
     }

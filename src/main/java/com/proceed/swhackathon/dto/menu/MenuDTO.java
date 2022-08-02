@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.dto.menu;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.model.Menu;
 import com.proceed.swhackathon.model.Store;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MenuDTO {
     private Long id;
+    @JsonIgnore
     private Store store;
     private String name;
     private String imageUrl;
