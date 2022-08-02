@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -32,11 +33,9 @@ public class MenuDTO {
     }
 
     public static List<MenuDTO> entityToDTO(List<Menu> menus){
-        List<MenuDTO> menuDTOList = new ArrayList<>();
-        for(Menu m : menus){
-            MenuDTO menuDTO = MenuDTO.entityToDTO(m);
-            menuDTOList.add(menuDTO);
-        }
-        return menuDTOList;
+        return menus
+                .stream()
+                .map(MenuDTO::entityToDTO)
+                .collect(Collectors.toList());
     }
 }
