@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/orderDeatil")
 public class OrderDetailController {
 
     private final OrderDetailService orderDetailService;
 
     @ApiOperation(value = "장바구니 추가", notes = "")
-    @PostMapping("/storeDetail/{orderId}/{menuId}")
+    @PostMapping("/{orderId}/{menuId}")
     public ResponseDTO<?> insertOrderDetail(@AuthenticationPrincipal String userId,
                                             @PathVariable Long orderId,
                                             @PathVariable Long menuId,
@@ -27,7 +28,7 @@ public class OrderDetailController {
     }
 
     @ApiOperation(value = "사용자별 장바구니 조회", notes = "")
-    @GetMapping("{orderId}/orderDetail")
+    @GetMapping("/{orderId}")
     public ResponseDTO<?> selectCart(@AuthenticationPrincipal String userId,
                                      @PathVariable Long orderId){
         return new ResponseDTO<>(HttpStatus.OK.value(),

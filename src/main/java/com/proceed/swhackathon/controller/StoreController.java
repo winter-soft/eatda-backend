@@ -35,7 +35,7 @@ public class StoreController {
     }
 
     @ApiOperation(value = "가게등록", notes = "매장명, 최소주문금액, 배경 이미지를 넣어 가게 정보 등록")
-    @PostMapping("/insert")
+    @PostMapping("/")
     public ResponseDTO<?> insert(StoreInsertDTO storeDTO){
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.insert(storeDTO));
     }
@@ -56,7 +56,7 @@ public class StoreController {
     }
 
     @ApiOperation(value = "가게정보 수정", notes = "id, name, minOrderPrice, backgroundImageUrl, category, infor을 받는다.")
-    @PostMapping("/update/{storeId}")
+    @PutMapping("/{storeId}")
     public ResponseDTO<?> update(@AuthenticationPrincipal String userId,
                                  @PathVariable Long storeId,
                                  @RequestBody StoreInsertDTO storeDTO){
@@ -64,7 +64,7 @@ public class StoreController {
     }
 
     @ApiOperation(value = "가게정보 삭제", notes = "storeId를 받아서 가게정보를 삭제한다.")
-    @GetMapping("/delete/{storeId}")
+    @DeleteMapping("/{storeId}")
     public ResponseDTO<?> delete(@AuthenticationPrincipal String userId, @PathVariable Long storeId){
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.delete(userId, storeId)+"이(가) 삭제 되었습니다.");
     }
