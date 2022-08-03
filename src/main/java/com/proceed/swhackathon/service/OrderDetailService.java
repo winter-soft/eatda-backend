@@ -2,17 +2,13 @@ package com.proceed.swhackathon.service;
 
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
+import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
-import com.proceed.swhackathon.model.Menu;
-import com.proceed.swhackathon.model.Order;
-import com.proceed.swhackathon.model.OrderDetail;
-import com.proceed.swhackathon.model.User;
-import com.proceed.swhackathon.repository.MenuRepository;
-import com.proceed.swhackathon.repository.OrderDetailRepository;
-import com.proceed.swhackathon.repository.OrderRepository;
-import com.proceed.swhackathon.repository.UserRepository;
+import com.proceed.swhackathon.exception.userOrderDetail.UserOrderDetailNotFoundException;
+import com.proceed.swhackathon.model.*;
+import com.proceed.swhackathon.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +25,13 @@ public class OrderDetailService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final UserOrderDetailRepository userOrderDetailRepository;
 
     @Transactional
-    public OrderDetailDTO insertOrderDeatil(String userId,
+    public OrderDetailDTO insertOrderDetail(String userId,
                                             Long orderId,
                                             Long menuId,
-                                            OrderDetailInsertDTO orderDetailDTO){
+                                            OrderDetailInsertDTO orderDetailDTO) {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
@@ -49,14 +46,13 @@ public class OrderDetailService {
                 .quantity(orderDetailDTO.getQuantity())
                 .build();
         orderDetail.setUser(user);
-        orderDetail.setOrder(order);
         orderDetail.setMenu(menu);
         orderDetail.calTotalPrice();
 
         return OrderDetailDTO.entityToDTO(orderDetailRepository.save(orderDetail));
     }
 
-    public List<OrderDetailDTO> selectCart(String userId, Long orderId){
+    public List<OrderDetailDTO> selectCart(String userId, Long orderId) {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
@@ -68,5 +64,66 @@ public class OrderDetailService {
                 .stream()
                 .map(OrderDetailDTO::entityToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateMenuCheck(String userId, Long orderId, Long menuId){
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+            throw new OrderNotFoundException();
+        });
+        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> {
+            throw new MenuNotFoundException();
+        });
+
+        orderDetailRepository.findByUserAndOrderAndMenu(user, order, menu)
+                .stream()
+                .forEach(od -> {
+                    od.triggerCheck();
+                });
+        return ;
+
+    }
+
+    @Transactional
+    public Long addOrder(String userId, Long orderId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+            throw new OrderNotFoundException();
+        });
+
+        UserOrderDetail uod = UserOrderDetail.builder()
+                .order(order)
+                .user(user)
+                .build();
+
+        return userOrderDetailRepository.save(uod).getId();
+    }
+
+    @Transactional
+    public UserOrderDetailDTO detachUOD(String userId, Long orderId, Long uodId){
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+            throw new OrderNotFoundException();
+        });
+        UserOrderDetail uod = userOrderDetailRepository.findById(uodId).orElseThrow(() -> {
+            throw new UserOrderDetailNotFoundException();
+        });
+
+        List<OrderDetail> ods = orderDetailRepository.findByUserAndOrder(user, order);
+        for (OrderDetail od : ods) {
+            od.setUserOrderDetail(uod);
+        }
+
+        uod.setOrderDetails(ods);
+        uod.calTotalPrice();
+
+        return UserOrderDetailDTO.entityToDTO(uod);
     }
 }

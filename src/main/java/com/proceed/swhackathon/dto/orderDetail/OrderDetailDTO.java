@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.dto.orderDetail;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.model.Menu;
 import com.proceed.swhackathon.model.Order;
 import com.proceed.swhackathon.model.OrderDetail;
@@ -19,6 +20,7 @@ public class OrderDetailDTO {
     private int totalPrice;
     private boolean menuCheck = true; // true면 체크, false은 체크해제
     private User user;
+    @JsonIgnore
     private Order order;
     private Menu menu;
 

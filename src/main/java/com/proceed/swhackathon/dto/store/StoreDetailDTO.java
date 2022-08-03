@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.dto.store;
 
+import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class StoreDetailDTO {
     private LocalDateTime endTime; // 마감시간
     private StoreDTO store;
     private Destination destination;
-    private List<OrderDetail> orderDetails = new ArrayList<>();
+    private List<UserOrderDetailDTO> orderDetails = new ArrayList<>();
 
     public static StoreDetailDTO entityToDTO(Order o){
         return StoreDetailDTO.builder()

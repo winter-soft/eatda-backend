@@ -3,6 +3,7 @@ package com.proceed.swhackathon.controller;
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.menu.MenuDTO;
 import com.proceed.swhackathon.dto.menu.MenuInsertDTO;
+import com.proceed.swhackathon.dto.menu.MenuUpdateDTO;
 import com.proceed.swhackathon.service.MenuService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,33 @@ public class MenuController {
 
     private final MenuService menuService;
 
+    @ApiOperation(value = "가게의 메뉴 정보 1건 조회", notes = "")
+    @GetMapping("/{menuId}")
+    public ResponseDTO<?> selectMenu(@PathVariable Long menuId){
+        return new ResponseDTO<>(HttpStatus.OK.value(), menuService.selectMenu(menuId));
+    }
+
     @ApiOperation(value = "가게의 메뉴를 추가한다.", notes = "그 가게의 사장만 가능하다.")
-    @PostMapping("/{storeId}/insert")
+    @PostMapping("/{storeId}")
     public ResponseDTO<?> addMenu(@AuthenticationPrincipal String userId,
                                   @PathVariable Long storeId,
                                   @RequestBody MenuInsertDTO menuDTO){
         return new ResponseDTO<>(HttpStatus.OK.value(), menuService.addMenu(userId, storeId, menuDTO));
+    }
+
+    @ApiOperation(value = "가게의 메뉴를 수정한다.", notes = "가게의 사장만 가능하다.")
+    @PutMapping("/{storeId}/{menuId}")
+    public ResponseDTO<?> updateMenu(@AuthenticationPrincipal String userId,
+                                     @PathVariable Long storeId,
+                                     @PathVariable Long menuId,
+                                     @RequestBody MenuUpdateDTO menuDTO){
+        return new ResponseDTO<>(HttpStatus.OK.value(), menuService.updateMenu(userId, storeId, menuId, menuDTO));
+    }
+
+    @ApiOperation(value = "메뉴를 삭제한다.", notes = "가게의 사장만 가능하다.")
+    @DeleteMapping("/{menuId}")
+    public ResponseDTO<?> deleteMenu(@AuthenticationPrincipal String userId,
+                                     @PathVariable Long menuId){
+        return new ResponseDTO<>(HttpStatus.OK.value(), menuService.deleteMenu(userId, menuId));
     }
 }

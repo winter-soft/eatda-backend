@@ -4,6 +4,7 @@ import com.proceed.swhackathon.dto.menu.MenuDTO;
 import com.proceed.swhackathon.dto.store.StoreDTO;
 import com.proceed.swhackathon.dto.store.StoreDetailDTO;
 import com.proceed.swhackathon.dto.store.StoreInsertDTO;
+import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.exception.IllegalArgumentException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.proceed.swhackathon.service.UserService.isBoss;
 
@@ -33,6 +35,7 @@ public class StoreService {
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final UserOrderDetailRepository userOrderDetailRepository;
 
     // dummy data
     @Transactional
@@ -77,7 +80,6 @@ public class StoreService {
         OrderDetail od1 = OrderDetail.builder()
                 .quantity(10)
                 .menu(m3)
-                .order(o1)
                 .menuCheck(true)
                 .build();
         od1.calTotalPrice();
@@ -92,6 +94,7 @@ public class StoreService {
         orderDetailRepository.save(od1);
     }
 
+    // 손봐야함
     public StoreDetailDTO storeDetail(Long id){
         Order order = orderRepository.findOrderByIdWithStore(id).orElseThrow(() -> {
             throw new OrderNotFoundException();
@@ -99,7 +102,10 @@ public class StoreService {
         Store store = storeRepository.findByIdWithMenus(order.getStore().getId()).orElseThrow(()->{
             throw new StoreNotFoundException();
         });
-        List<OrderDetail> orderDetails = orderDetailRepository.findByStore(store);
+        List<UserOrderDetailDTO> uods = userOrderDetailRepository.findByOrderAll(order)
+                .stream()
+                .map(UserOrderDetailDTO::entityToDTO)
+                .collect(Collectors.toList());
 
 
         List<MenuDTO> menuDTOList = MenuDTO.entityToDTO(store.getMenus());
@@ -109,7 +115,7 @@ public class StoreService {
 
         StoreDetailDTO storeDetailDTO = StoreDetailDTO.entityToDTO(order);
         storeDetailDTO.setStore(storeDTO);
-        storeDetailDTO.setOrderDetails(orderDetails);
+        storeDetailDTO.setOrderDetails(uods);
 
         return storeDetailDTO;
     }
