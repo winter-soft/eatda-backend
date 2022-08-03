@@ -102,7 +102,7 @@ public class StoreService {
         Store store = storeRepository.findByIdWithMenus(order.getStore().getId()).orElseThrow(()->{
             throw new StoreNotFoundException();
         });
-        List<UserOrderDetailDTO> uods = userOrderDetailRepository.findByOrder(order)
+        List<UserOrderDetailDTO> uods = userOrderDetailRepository.findByOrderAll(order)
                 .stream()
                 .map(UserOrderDetailDTO::entityToDTO)
                 .collect(Collectors.toList());

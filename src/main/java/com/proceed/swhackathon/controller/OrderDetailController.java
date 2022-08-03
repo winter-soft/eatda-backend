@@ -3,6 +3,8 @@ package com.proceed.swhackathon.controller;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
+import com.proceed.swhackathon.model.Order;
+import com.proceed.swhackathon.model.UserOrderDetail;
 import com.proceed.swhackathon.service.OrderDetailService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +35,24 @@ public class OrderDetailController {
                                      @PathVariable Long orderId){
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 orderDetailService.selectCart(userId, orderId));
+    }
+
+    @ApiOperation(value = "메뉴 체크", notes = "true면 false, false면 true로 변경")
+    @PutMapping("/{orderId}/{menuId}")
+    public ResponseDTO<?> updateCart(@AuthenticationPrincipal String userId,
+                                     @PathVariable Long orderId,
+                                     @PathVariable Long menuId){
+        orderDetailService.updateMenuCheck(userId, orderId, menuId);
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                "메뉴 체크 동작이 완료되었습니다.");
+    }
+
+    @ApiOperation(value = "주문 넣기", notes = "사용자의 장바구니에 담긴 메뉴를 order에 추가")
+    @GetMapping("/userOrder/{orderId}")
+    public ResponseDTO<?> addOrder(@AuthenticationPrincipal String userId,
+                                   @PathVariable Long orderId){
+        Long uodId = orderDetailService.addOrder(userId, orderId);
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                orderDetailService.detachUOD(userId, orderId, uodId));
     }
 }

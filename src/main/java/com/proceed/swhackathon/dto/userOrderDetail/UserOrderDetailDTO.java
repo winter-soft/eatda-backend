@@ -25,6 +25,7 @@ public class UserOrderDetailDTO {
         return UserOrderDetailDTO.builder()
                 .id(uod.getId())
                 .totalPrice(uod.getTotalPrice())
+                .orderDetails(uod.getOrderDetails())
                 .build();
     }
 }

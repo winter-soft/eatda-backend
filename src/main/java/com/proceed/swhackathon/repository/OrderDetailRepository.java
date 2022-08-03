@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
@@ -18,4 +19,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
 
     @Query("select od from OrderDetail od where od.menu = :menu")
     List<OrderDetail> findByMenu(Menu menu);
+
+    @Query("select od from OrderDetail od where od.user = :user and od.order = :order and  od.menu = :menu")
+    List<OrderDetail> findByUserAndOrderAndMenu(User user, Order order, Menu menu);
 }

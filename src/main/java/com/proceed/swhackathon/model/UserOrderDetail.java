@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import lombok.*;
 
@@ -21,6 +22,10 @@ public class UserOrderDetail {
     private int totalPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
@@ -34,6 +39,14 @@ public class UserOrderDetail {
                 totalPrice += od.getTotalPrice();
         }
         order.calCurrentAmount(totalPrice);
+    }
+
+    public void changeTotalPrice(boolean trigger, int amount){
+        if(trigger){
+            totalPrice += amount;
+        }else{
+            totalPrice -= amount;
+        }
     }
 
     public void cancel(){

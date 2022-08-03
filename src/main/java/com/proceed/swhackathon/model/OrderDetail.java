@@ -25,6 +25,7 @@ public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,11 +44,10 @@ public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을
 
     public void calTotalPrice(){
         totalPrice = menu.getPrice() * quantity;
-        userOrderDetail.calTotalPrice();
     }
 
     public void triggerCheck(){
         menuCheck = menuCheck ? false : true;
-        userOrderDetail.calTotalPrice();
+        userOrderDetail.changeTotalPrice(menuCheck, totalPrice);
     }
 }
