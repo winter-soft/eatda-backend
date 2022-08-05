@@ -1,5 +1,8 @@
 # swhackathon-backend
 
+## API Doc
+http://api-eatda.wintersoft.kr/api/swagger-ui.html
+
 ## ERD
 
 <img width="932" alt="스크린샷 2022-08-03 오전 10 24 50" src="https://user-images.githubusercontent.com/79779676/182504072-41ac02ce-5f35-4e0e-bff1-d020343514c8.png">
