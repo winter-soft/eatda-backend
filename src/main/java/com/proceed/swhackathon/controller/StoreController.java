@@ -1,9 +1,11 @@
 package com.proceed.swhackathon.controller;
 
 import com.proceed.swhackathon.dto.ResponseDTO;
+import com.proceed.swhackathon.dto.store.CategoryDTO;
 import com.proceed.swhackathon.dto.store.StoreDetailDTO;
 import com.proceed.swhackathon.dto.store.StoreInsertDTO;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
+import com.proceed.swhackathon.model.Category;
 import com.proceed.swhackathon.repository.StoreRepository;
 import com.proceed.swhackathon.service.StoreService;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +17,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -67,5 +74,19 @@ public class StoreController {
     @DeleteMapping("/{storeId}")
     public ResponseDTO<?> delete(@AuthenticationPrincipal String userId, @PathVariable Long storeId){
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.delete(userId, storeId)+"이(가) 삭제 되었습니다.");
+    }
+
+    @ApiOperation(value = "카테고리 가져오기", notes = "")
+    @GetMapping("/category")
+    public ResponseDTO<?> selectCategory(){
+        List<CategoryDTO> categoryDTOS = new ArrayList<>();
+        for(Category c : Category.values()){
+            categoryDTOS.add(CategoryDTO.builder()
+                            .category(c)
+                            .category_ko(c.label())
+                            .build());
+        }
+
+        return new ResponseDTO<>(HttpStatus.OK.value(), categoryDTOS);
     }
 }
