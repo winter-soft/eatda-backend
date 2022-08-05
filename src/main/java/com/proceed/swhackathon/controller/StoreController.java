@@ -5,6 +5,7 @@ import com.proceed.swhackathon.dto.store.StoreDetailDTO;
 import com.proceed.swhackathon.dto.store.StoreInsertDTO;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.repository.StoreRepository;
+import com.proceed.swhackathon.service.S3Service;
 import com.proceed.swhackathon.service.StoreService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -24,6 +28,7 @@ public class StoreController {
 
     private final StoreService storeService;
     private final StoreRepository storeRepository;
+    private final S3Service s3Service;
 
     @ApiOperation(value = "가게상세", notes = "주문번호를 받아,  가게상세 페이지로 가게정보, 해당오더정보, 메뉴, 좋아요수를 리턴합니다.")
     @GetMapping("/storeDetail/{orderId}")
@@ -36,7 +41,10 @@ public class StoreController {
 
     @ApiOperation(value = "가게등록", notes = "매장명, 최소주문금액, 배경 이미지를 넣어 가게 정보 등록")
     @PostMapping("/")
-    public ResponseDTO<?> insert(StoreInsertDTO storeDTO){
+    public ResponseDTO<?> insert(StoreInsertDTO storeDTO, MultipartFile file) throws IOException {
+        String imgPath = s3Service.upload(file);
+        storeDTO.setBackgroundImageUrl(imgPath);
+
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.insert(storeDTO));
     }
 
