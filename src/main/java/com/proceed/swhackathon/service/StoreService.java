@@ -120,6 +120,7 @@ public class StoreService {
         return storeDetailDTO;
     }
 
+    @Transactional
     public StoreDTO insert(StoreInsertDTO storeDTO){
         Store store = Store.builder()
                 .name(storeDTO.getName())
