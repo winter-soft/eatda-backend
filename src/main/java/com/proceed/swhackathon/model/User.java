@@ -27,11 +27,15 @@ public class User {
     @Column(nullable = false)
     private String username;
 
+    private String platformType;
+
+    @Column(nullable = false)
+    private String platformId;
+
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    private String profileImageUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

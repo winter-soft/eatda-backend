@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRegisterDTO {
+    private String platformType;
+    private String platformId;
     private String email;
     private String username;
-    private String password;
+    private String profileImageUrl;
     private Role role = Role.USER;
 }

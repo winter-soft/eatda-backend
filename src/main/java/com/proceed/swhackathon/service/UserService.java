@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.service;
 
+import com.proceed.swhackathon.config.security.jwt.TokenProvider;
 import com.proceed.swhackathon.dto.user.UserDTO;
 import com.proceed.swhackathon.exception.user.UserDuplicatedException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
@@ -13,21 +14,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.proceed.swhackathon.dto.user.UserDTO.entityToDTO;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
 
+    private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
 
     public User create(final User userEntity){
-        if(userEntity == null || userEntity.getEmail()==null){
+        if(userEntity == null || userEntity.getPlatformId()==null){
             throw new UserNotFoundException();
         }
-        final String email = userEntity.getEmail();
-        if(userRepository.existsByEmail(email)){
-            log.warn("Email already exists {}",email);
+
+        if(userRepository.existsByPlatformTypeAndPlatformId(userEntity.getPlatformType(), userEntity.getPlatformId())){
             throw new UserDuplicatedException();
         }
 
@@ -38,16 +41,18 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
-        return UserDTO.entityToDTO(user);
+        return entityToDTO(user);
     }
 
-    public User getByCredentials(final String email, final String password,final BCryptPasswordEncoder encoder){
-        final User originalUser = userRepository.findByEmail(email);
-
-        if(originalUser!=null && encoder.matches(password,originalUser.getPassword())) {
-            return originalUser;
-        }
-        return null;
+    public UserDTO getByCredentials(final String platformType, final String platformId){
+        final User originalUser = userRepository.findByPlatformIdAndAndPlatformType(platformId, platformType)
+                .orElseThrow(()->{
+                    throw new UserNotFoundException();
+                });
+        UserDTO userDTO = UserDTO.entityToDTO(originalUser);
+        final String token = tokenProvider.create(originalUser);
+        userDTO.setToken(token);
+        return userDTO;
     }
 
     // 사장인지 체크

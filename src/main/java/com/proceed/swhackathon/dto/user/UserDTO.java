@@ -14,17 +14,21 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private String token;
     private String id;
+    private String platformType;
+    private String platformId;
     private String email;
+    private String profileImageUrl;
     private String username;
-    private String password;
     private Role role = Role.USER;
 
     public static UserDTO entityToDTO(User user){
         return UserDTO.builder()
                 .id(user.getId())
+                .platformType(user.getPlatformType())
+                .platformId(user.getPlatformId())
                 .email(user.getEmail())
+                .profileImageUrl(user.getProfileImageUrl())
                 .username(user.getUsername())
-                .password(user.getPassword())
                 .role(user.getRole())
                 .build();
     }
