@@ -39,7 +39,7 @@ public class MenuService {
     }
 
     @Transactional
-    public StoreDTO addMenu(String userId, Long storeId, MenuInsertDTO menuDTO){
+    public StoreDTO addMenu(String userId, MenuInsertDTO menuDTO){
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
@@ -47,7 +47,7 @@ public class MenuService {
         // 사장인지 체크
         isBoss(user);
 
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> {
+        Store store = storeRepository.findByUser(userId).orElseThrow(() -> {
             throw new StoreNotFoundException();
         });
 
@@ -60,7 +60,7 @@ public class MenuService {
     }
 
     @Transactional
-    public StoreDTO updateMenu(String userId, Long storeId, Long menuId, MenuUpdateDTO menuDTO){
+    public StoreDTO updateMenu(String userId, Long menuId, MenuUpdateDTO menuDTO){
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
@@ -68,7 +68,7 @@ public class MenuService {
         // 사장인지 체크
         isBoss(user);
 
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> {
+        Store store = storeRepository.findByUser(userId).orElseThrow(() -> {
             throw new StoreNotFoundException();
         });
 

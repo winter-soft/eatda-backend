@@ -25,20 +25,18 @@ public class MenuController {
     }
 
     @ApiOperation(value = "가게의 메뉴를 추가한다.", notes = "그 가게의 사장만 가능하다.")
-    @PostMapping("/{storeId}")
+    @PostMapping("/")
     public ResponseDTO<?> addMenu(@AuthenticationPrincipal String userId,
-                                  @PathVariable Long storeId,
                                   @RequestBody MenuInsertDTO menuDTO){
-        return new ResponseDTO<>(HttpStatus.OK.value(), menuService.addMenu(userId, storeId, menuDTO));
+        return new ResponseDTO<>(HttpStatus.OK.value(), menuService.addMenu(userId, menuDTO));
     }
 
     @ApiOperation(value = "가게의 메뉴를 수정한다.", notes = "가게의 사장만 가능하다.")
-    @PutMapping("/{storeId}/{menuId}")
+    @PutMapping("/{menuId}")
     public ResponseDTO<?> updateMenu(@AuthenticationPrincipal String userId,
-                                     @PathVariable Long storeId,
                                      @PathVariable Long menuId,
                                      @RequestBody MenuUpdateDTO menuDTO){
-        return new ResponseDTO<>(HttpStatus.OK.value(), menuService.updateMenu(userId, storeId, menuId, menuDTO));
+        return new ResponseDTO<>(HttpStatus.OK.value(), menuService.updateMenu(userId, menuId, menuDTO));
     }
 
     @ApiOperation(value = "메뉴를 삭제한다.", notes = "가게의 사장만 가능하다.")
