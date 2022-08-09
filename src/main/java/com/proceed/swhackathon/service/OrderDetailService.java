@@ -47,6 +47,7 @@ public class OrderDetailService {
                 .build();
         orderDetail.setUser(user);
         orderDetail.setMenu(menu);
+        orderDetail.setOrder(order);
         orderDetail.calTotalPrice();
 
         return OrderDetailDTO.entityToDTO(orderDetailRepository.save(orderDetail));

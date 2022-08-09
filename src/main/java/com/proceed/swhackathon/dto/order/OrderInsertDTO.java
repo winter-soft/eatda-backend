@@ -14,12 +14,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderInsertDTO {
-    private Long id;
     private OrderStatus orderStatus; // 주문 상태
     private int currentAmount; // 현재 달성 금액
     private LocalDateTime startTime; // 시작시간
     private LocalDateTime endTime; // 마감시간
-    private Long destination;
+    private Long destination_id;
 
     public Order dtoToEntity(){
         return Order.builder()
@@ -32,12 +31,11 @@ public class OrderInsertDTO {
 
     public static OrderInsertDTO entityToDTO(Order o){
         return OrderInsertDTO.builder()
-                .id(o.getId())
                 .orderStatus(o.getOrderStatus())
                 .currentAmount(o.getCurrentAmount())
                 .startTime(o.getStartTime())
                 .endTime(o.getEndTime())
-                .destination(o.getDestination().getId())
+                .destination_id(o.getDestination().getId())
                 .build();
     }
 }

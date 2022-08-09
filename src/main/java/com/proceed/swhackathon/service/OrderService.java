@@ -36,7 +36,7 @@ public class OrderService {
         });
         Order order = orderDTO.dtoToEntity();
         order.setDestination(destinationRepository
-                .findById(orderDTO.getId())
+                .findById(orderDTO.getDestination_id())
                 .orElseThrow(()->{
             throw new DestinationNotFoundException();
         }));
