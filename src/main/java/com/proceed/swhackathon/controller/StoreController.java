@@ -80,9 +80,9 @@ public class StoreController {
     }
 
     @ApiOperation(value = "가게정보 삭제", notes = "storeId를 받아서 가게정보를 삭제한다.")
-    @DeleteMapping("/{storeId}")
-    public ResponseDTO<?> delete(@AuthenticationPrincipal String userId, @PathVariable Long storeId){
-        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.delete(userId, storeId)+"이(가) 삭제 되었습니다.");
+    @DeleteMapping("/")
+    public ResponseDTO<?> delete(@AuthenticationPrincipal String userId){
+        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.delete(userId)+"이(가) 삭제 되었습니다.");
     }
 
     @ApiOperation(value = "카테고리 가져오기", notes = "")

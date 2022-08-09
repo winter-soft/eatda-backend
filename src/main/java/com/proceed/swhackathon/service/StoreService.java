@@ -95,8 +95,8 @@ public class StoreService {
     }
 
     // 손봐야함
-    public StoreDetailDTO storeDetail(Long id){
-        Order order = orderRepository.findOrderByIdWithStore(id).orElseThrow(() -> {
+    public StoreDetailDTO storeDetail(Long orderId){
+        Order order = orderRepository.findOrderByIdWithStore(orderId).orElseThrow(() -> {
             throw new OrderNotFoundException();
         });
         Store store = storeRepository.findByIdWithMenus(order.getStore().getId()).orElseThrow(()->{
@@ -172,19 +172,16 @@ public class StoreService {
     }
 
     @Transactional
-    public String delete(String userId, Long storeId){
+    public String delete(String userId){
         try {
-            // 사장인지 체크
-            isBoss(userRepository.findById(userId).orElseThrow(() -> {
-                throw new UserNotFoundException();
-            }));
-            Store store = storeRepository.findById(storeId).orElseThrow(() -> {
+            Store store = storeRepository.findByUser(userId).orElseThrow(() -> {
                 throw new StoreNotFoundException();
             });
+
             String name = store.getName();
             store.removeMenu();
             for(Order o : orderRepository.findByStore(store)){ o.removeStore(); }
-            storeRepository.deleteById(storeId);
+            storeRepository.deleteById(store.getId());
 
             return name;
         }catch (IllegalArgumentException e){
