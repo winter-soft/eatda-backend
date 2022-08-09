@@ -23,6 +23,7 @@ public class StoreDTO {
     private String backgroundImageUrl; // 배경 이미지
     private Category category;
     private String infor;
+    private User user;
     private List<MenuDTO> menus = new ArrayList<>();
     private int likes = 0;
 
@@ -33,6 +34,7 @@ public class StoreDTO {
                 .minOrderPrice(s.getMinOrderPrice())
                 .category(s.getCategory())
                 .infor(s.getInfor())
+                .user(s.getUser())
                 .backgroundImageUrl(s.getBackgroundImageUrl())
                 .menus(s.getMenus().stream().map(MenuDTO::entityToDTO).collect(Collectors.toList()))
                 .likes(s.getLikesCount())

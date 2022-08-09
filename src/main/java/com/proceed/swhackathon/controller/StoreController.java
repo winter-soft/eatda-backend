@@ -48,11 +48,11 @@ public class StoreController {
 
     @ApiOperation(value = "가게등록", notes = "매장명, 최소주문금액, 배경 이미지를 넣어 가게 정보 등록")
     @PostMapping("/")
-    public ResponseDTO<?> insert(StoreInsertDTO storeDTO, MultipartFile file) throws IOException {
+    public ResponseDTO<?> insert(@AuthenticationPrincipal String userId, StoreInsertDTO storeDTO, MultipartFile file) throws IOException {
         String imgPath = s3Service.upload(file);
         storeDTO.setBackgroundImageUrl(imgPath);
 
-        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.insert(storeDTO));
+        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.insert(userId, storeDTO));
     }
 
     @ApiOperation(value = "가게 한건 조회", notes = "{id}를 통해 가게를 조회한다.")
@@ -71,11 +71,10 @@ public class StoreController {
     }
 
     @ApiOperation(value = "가게정보 수정", notes = "id, name, minOrderPrice, backgroundImageUrl, category, infor을 받는다.")
-    @PutMapping("/{storeId}")
+    @PutMapping("/")
     public ResponseDTO<?> update(@AuthenticationPrincipal String userId,
-                                 @PathVariable Long storeId,
                                  @RequestBody StoreInsertDTO storeDTO){
-        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.update(userId, storeId, storeDTO));
+        return new ResponseDTO<>(HttpStatus.OK.value(), storeService.update(userId, storeDTO));
     }
 
     @ApiOperation(value = "가게정보 삭제", notes = "storeId를 받아서 가게정보를 삭제한다.")

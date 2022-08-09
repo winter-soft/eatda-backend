@@ -29,6 +29,10 @@ public class Store {
     @Lob
     private String infor; // 가게 정보
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user; // 사장님
+
     @OneToMany(mappedBy = "store")
     @Builder.Default
     @JsonIgnore

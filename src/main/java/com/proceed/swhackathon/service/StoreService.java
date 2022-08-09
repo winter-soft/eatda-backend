@@ -121,13 +121,17 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreDTO insert(StoreInsertDTO storeDTO){
+    public StoreDTO insert(String userId, StoreInsertDTO storeDTO){
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
         Store store = Store.builder()
                 .name(storeDTO.getName())
                 .minOrderPrice(storeDTO.getMinOrderPrice())
                 .backgroundImageUrl(storeDTO.getBackgroundImageUrl())
                 .category(storeDTO.getCategory())
                 .infor(storeDTO.getInfor())
+                .user(user)
                 .build();
 
         try {
@@ -144,13 +148,13 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreDTO update(String userId, Long storeId, StoreInsertDTO storeDTO){
+    public StoreDTO update(String userId, StoreInsertDTO storeDTO){
         // 사장인지 체크
         isBoss(userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         }));
 
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> {
+        Store store = storeRepository.findByUser(userId).orElseThrow(() -> {
             throw new StoreNotFoundException();
         });
 
