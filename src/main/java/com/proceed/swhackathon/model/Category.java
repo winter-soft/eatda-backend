@@ -10,7 +10,8 @@ public enum Category {
     DESSERT("디저트"),
     KOREANFOOD("한식"),
     CHINESEFOOD("중식"),
-    FLOURBASEDFOOD("분식");
+    FLOURBASEDFOOD("분식"),
+    JAPANESEFOOD("일식");
 
     @JsonCreator
     public static Category from(String s) {
