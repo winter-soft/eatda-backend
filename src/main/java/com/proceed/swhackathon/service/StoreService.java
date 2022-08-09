@@ -122,9 +122,13 @@ public class StoreService {
 
     @Transactional
     public StoreDTO insert(String userId, StoreInsertDTO storeDTO){
+
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
+
+        isBoss(user); // 사장인지 체크
+
         Store store = Store.builder()
                 .name(storeDTO.getName())
                 .minOrderPrice(storeDTO.getMinOrderPrice())

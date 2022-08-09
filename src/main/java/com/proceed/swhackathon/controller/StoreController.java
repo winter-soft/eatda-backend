@@ -48,7 +48,9 @@ public class StoreController {
 
     @ApiOperation(value = "가게등록", notes = "매장명, 최소주문금액, 배경 이미지를 넣어 가게 정보 등록")
     @PostMapping("/")
-    public ResponseDTO<?> insert(@AuthenticationPrincipal String userId, StoreInsertDTO storeDTO, MultipartFile file) throws IOException {
+    public ResponseDTO<?> insert(@AuthenticationPrincipal String userId,
+                                 @RequestBody StoreInsertDTO storeDTO,
+                                 MultipartFile file) throws IOException {
         String imgPath = s3Service.upload(file);
         storeDTO.setBackgroundImageUrl(imgPath);
 
