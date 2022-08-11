@@ -53,6 +53,8 @@ public class UserOrderDetail {
         if(order == null){
             throw new OrderNotFoundException();
         }
-        order.cancel(totalPrice);
+        orderDetails.stream().forEach(od -> od.setUserOrderDetail(null));
+        orderDetails = null;
+        order.cancel(totalPrice, this);
     }
 }

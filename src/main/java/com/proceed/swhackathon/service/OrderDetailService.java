@@ -44,6 +44,7 @@ public class OrderDetailService {
 
         OrderDetail orderDetail = OrderDetail.builder()
                 .quantity(orderDetailDTO.getQuantity())
+                .menuCheck(true)
                 .build();
         orderDetail.setUser(user);
         orderDetail.setMenu(menu);
@@ -96,6 +97,12 @@ public class OrderDetailService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> {
             throw new OrderNotFoundException();
         });
+
+        UserOrderDetail result = userOrderDetailRepository.findByOrderAndUserWithOrder(order, user).orElse(null);
+        if(result != null){
+            result.cancel();
+            userOrderDetailRepository.delete(result);
+        }
 
         UserOrderDetail uod = UserOrderDetail.builder()
                 .order(order)

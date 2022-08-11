@@ -54,6 +54,15 @@ public class OrderDetailController {
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 orderDetailService.detachUOD(userId, orderId, uodId));
     }
+//
+//    @ApiOperation(value = "주문 수정", notes = "사용자의 장바구니에 담긴 메뉴를 수정")
+//    @PutMapping("/userOrder/{orderId}")
+//    public ResponseDTO<?> updateOrder(@AuthenticationPrincipal String userId,
+//                                   @PathVariable Long orderId){
+//        Long uodId = orderDetailService.addOrder(userId, orderId);
+//        return new ResponseDTO<>(HttpStatus.OK.value(),
+//                orderDetailService.detachUOD(userId, orderId, uodId));
+//    }
 
     @ApiOperation(value = "유저 주문목록 가져오기", notes = "")
     @GetMapping("/userOrderDetail/{orderId}")

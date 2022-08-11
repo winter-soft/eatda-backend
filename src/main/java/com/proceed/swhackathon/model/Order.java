@@ -45,11 +45,14 @@ public class Order {
         currentAmount += amount;
     }
 
-    public void cancel(int amount){
+    public void cancel(int amount,UserOrderDetail uod){
         if(currentAmount - amount < 0){
             throw new OrderIllegalArgumentException();
         }else{
             currentAmount -= amount;
+            if(userOrderDetails.contains(uod)) {
+                userOrderDetails.remove(uod);
+            }
         }
     }
 
