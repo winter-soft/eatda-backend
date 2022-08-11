@@ -45,6 +45,12 @@ public class Order {
         currentAmount += amount;
     }
 
+    public void updateCurrentAmount(){
+        currentAmount = 0;
+        for(UserOrderDetail uod : userOrderDetails)
+            currentAmount += uod.getTotalPrice();
+    }
+
     public void cancel(int amount,UserOrderDetail uod){
         if(currentAmount - amount < 0){
             throw new OrderIllegalArgumentException();

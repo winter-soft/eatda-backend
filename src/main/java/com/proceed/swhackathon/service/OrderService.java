@@ -44,10 +44,13 @@ public class OrderService {
         return OrderDTO.entityToDTO(orderRepository.save(order));
     }
 
+    @Transactional
     public OrderDTO select(Long orderId){
-        return OrderDTO.entityToDTO(orderRepository.findById(orderId).orElseThrow(()->{
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
             throw new OrderNotFoundException();
-        }));
+        });
+        order.updateCurrentAmount();
+        return OrderDTO.entityToDTO(order);
     }
 
     public Page<OrderDTO> selectAll(Pageable pageable){
