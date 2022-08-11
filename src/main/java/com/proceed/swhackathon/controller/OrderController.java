@@ -48,4 +48,13 @@ public class OrderController {
                                     Pageable pageable){
         return new ResponseDTO<>(HttpStatus.OK.value(), orderService.selectAll(pageable));
     }
+
+    @ApiOperation(value = "주문 상태별 가게주문 조회", notes = "")
+    @PostMapping("/")
+    public ResponseDTO<?> selectAll(@PageableDefault(sort = "currentAmount",direction = Sort.Direction.DESC)
+                                            Pageable pageable,
+                                    @RequestBody OrderStatusDTO orderStatus){
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                orderService.selectAllOrderByOrderStatus(pageable, orderStatus.getOrderStatus()));
+    }
 }

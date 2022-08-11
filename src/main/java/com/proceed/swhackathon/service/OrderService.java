@@ -57,6 +57,10 @@ public class OrderService {
         return orderRepository.findAll(pageable).map(OrderDTO::entityToDTO);
     }
 
+    public Page<OrderDTO> selectAllOrderByOrderStatus(Pageable pageable, OrderStatus orderStatus){
+        return orderRepository.findAllByOrderStatus(pageable, orderStatus).map(OrderDTO::entityToDTO);
+    }
+
     @Transactional
     public OrderDTO updateStatus(String userId,
                                  Long orderId,

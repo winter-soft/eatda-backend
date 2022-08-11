@@ -1,7 +1,10 @@
 package com.proceed.swhackathon.repository;
 
 import com.proceed.swhackathon.model.Order;
+import com.proceed.swhackathon.model.OrderStatus;
 import com.proceed.swhackathon.model.Store;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +21,5 @@ public interface  OrderRepository extends JpaRepository<Order, Long> {
     @Query("select o from Order o where o.store = :store")
     List<Order> findByStore(Store store);
 
+    Page<Order> findAllByOrderStatus(Pageable pageable, OrderStatus orderStatus);
 }
