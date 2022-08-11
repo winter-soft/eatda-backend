@@ -11,7 +11,8 @@ public enum Category {
     KOREANFOOD("한식"),
     CHINESEFOOD("중식"),
     FLOURBASEDFOOD("분식"),
-    JAPANESEFOOD("일식");
+    JAPANESEFOOD("일식"),
+    CHICKEN("치킨");
 
     @JsonCreator
     public static Category from(String s) {

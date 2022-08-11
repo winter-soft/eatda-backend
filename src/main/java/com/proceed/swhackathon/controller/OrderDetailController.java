@@ -42,9 +42,8 @@ public class OrderDetailController {
     public ResponseDTO<?> updateCart(@AuthenticationPrincipal String userId,
                                      @PathVariable Long orderId,
                                      @PathVariable Long menuId){
-        orderDetailService.updateMenuCheck(userId, orderId, menuId);
         return new ResponseDTO<>(HttpStatus.OK.value(),
-                "메뉴 체크 동작이 완료되었습니다.");
+                orderDetailService.updateMenuCheck(userId, orderId, menuId));
     }
 
     @ApiOperation(value = "주문 넣기", notes = "사용자의 장바구니에 담긴 메뉴를 order에 추가")
@@ -54,5 +53,13 @@ public class OrderDetailController {
         Long uodId = orderDetailService.addOrder(userId, orderId);
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 orderDetailService.detachUOD(userId, orderId, uodId));
+    }
+
+    @ApiOperation(value = "유저 주문목록 가져오기", notes = "")
+    @GetMapping("/userOrderDetail/{orderId}")
+    public ResponseDTO<?> selectUOD(@AuthenticationPrincipal String userId,
+                                   @PathVariable Long orderId){
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                orderDetailService.selectUOD(userId, orderId));
     }
 }

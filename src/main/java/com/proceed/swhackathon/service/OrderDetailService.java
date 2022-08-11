@@ -68,7 +68,7 @@ public class OrderDetailService {
     }
 
     @Transactional
-    public void updateMenuCheck(String userId, Long orderId, Long menuId){
+    public String updateMenuCheck(String userId, Long orderId, Long menuId){
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
@@ -79,13 +79,13 @@ public class OrderDetailService {
             throw new MenuNotFoundException();
         });
 
-        orderDetailRepository.findByUserAndOrderAndMenu(user, order, menu)
-                .stream()
-                .forEach(od -> {
-                    od.triggerCheck();
-                });
-        return ;
+        OrderDetail ods = orderDetailRepository.findByUserAndOrderAndMenu(user, order, menu).orElseThrow(() -> {
+            throw new UserOrderDetailNotFoundException();
+        });
 
+        if(ods == null) return "메뉴를 찾지 못했습니다.";
+        else
+            return ods.triggerCheck() ? "메뉴를 체크했습니다." : "메뉴를 체크해제했습니다.";
     }
 
     @Transactional
@@ -124,6 +124,25 @@ public class OrderDetailService {
 
         uod.setOrderDetails(ods);
         uod.calTotalPrice();
+
+        return UserOrderDetailDTO.entityToDTO(uod);
+    }
+
+    public UserOrderDetailDTO selectUOD(String userId, Long orderId){
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+            throw new OrderNotFoundException();
+        });
+
+        UserOrderDetail uod = userOrderDetailRepository.findByOrderAndUser(order, user).orElseThrow(() -> {
+            throw new UserOrderDetailNotFoundException();
+        });
+
+        List<OrderDetail> ods = orderDetailRepository.selectUOD(uod, user);
+        ods.removeIf(od -> !od.isMenuCheck());
+        uod.setOrderDetails(ods);
 
         return UserOrderDetailDTO.entityToDTO(uod);
     }

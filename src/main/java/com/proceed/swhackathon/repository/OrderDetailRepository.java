@@ -20,6 +20,9 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
     @Query("select od from OrderDetail od where od.menu = :menu")
     List<OrderDetail> findByMenu(Menu menu);
 
-    @Query("select od from OrderDetail od where od.user = :user and od.order = :order and  od.menu = :menu")
-    List<OrderDetail> findByUserAndOrderAndMenu(User user, Order order, Menu menu);
+    @Query("select od from OrderDetail od join fetch od.menu m where od.user = :user and od.order = :order and  m = :menu")
+    Optional<OrderDetail> findByUserAndOrderAndMenu(User user, Order order, Menu menu);
+
+    @Query("select od from OrderDetail od join fetch UserOrderDetail uod where uod = :uod and od.menuCheck = true and od.user = :user")
+    List<OrderDetail> selectUOD(UserOrderDetail uod, User user);
 }

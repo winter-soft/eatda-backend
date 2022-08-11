@@ -21,7 +21,7 @@ public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을
     private int quantity;
     private int totalPrice;
     @ColumnDefault(value = "true")
-    private boolean menuCheck; // true면 체크, false은 체크해제
+    private boolean menuCheck = true; // true면 체크, false은 체크해제
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -46,8 +46,9 @@ public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을
         totalPrice = menu.getPrice() * quantity;
     }
 
-    public void triggerCheck(){
+    public boolean triggerCheck(){
         menuCheck = menuCheck ? false : true;
-        userOrderDetail.changeTotalPrice(menuCheck, totalPrice);
+        if(userOrderDetail != null) userOrderDetail.changeTotalPrice(menuCheck, totalPrice);
+        return menuCheck;
     }
 }
