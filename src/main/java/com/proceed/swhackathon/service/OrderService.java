@@ -41,6 +41,7 @@ public class OrderService {
             throw new DestinationNotFoundException();
         }));
         order.setStore(store);
+        store.setRecentlyOrder(order);
         return OrderDTO.entityToDTO(orderRepository.save(order));
     }
 

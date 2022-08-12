@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.model.Destination;
 import com.proceed.swhackathon.model.Order;
 import com.proceed.swhackathon.model.OrderStatus;
@@ -21,6 +22,7 @@ public class OrderDTO {
     private int currentAmount; // 현재 달성 금액
     private LocalDateTime startTime; // 시작시간
     private LocalDateTime endTime; // 마감시간
+    @JsonIgnore
     private Store store;
     private Destination destination;
 

@@ -117,7 +117,7 @@ public class OrderDetailService {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+        Order order = orderRepository.findOrderByIdWithStore(orderId).orElseThrow(() -> {
             throw new OrderNotFoundException();
         });
         UserOrderDetail uod = userOrderDetailRepository.findById(uodId).orElseThrow(() -> {
@@ -131,6 +131,9 @@ public class OrderDetailService {
 
         uod.setOrderDetails(ods);
         uod.calTotalPrice();
+
+        // 최근 주문 오더 수정
+        order.getStore().setRecentlyOrder(order);
 
         return UserOrderDetailDTO.entityToDTO(uod);
     }

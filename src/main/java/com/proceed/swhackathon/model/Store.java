@@ -1,6 +1,7 @@
 package com.proceed.swhackathon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proceed.swhackathon.exception.store.StoreDistanceException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,12 +23,19 @@ public class Store {
 
     private String name; // 매장명
     private int minOrderPrice; // 최소 주문금액
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recentlyOrder_id")
+    private Order recentlyOrder; // 가장 최근 주문
+
+    @Lob
     private String backgroundImageUrl; // 배경 이미지
     @Enumerated(EnumType.STRING)
     private Category category; // 매장 카테고리
 
     @Lob
     private String infor; // 가게 정보
+
+    private String distance; // 거리정보
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -77,5 +85,18 @@ public class Store {
         return likes.size();
     }
 
+    // Set recentlyOrder
+    public void setRecentlyOrder(Order order){
+        if(order.getOrderStatus() == OrderStatus.WAITING){
+            recentlyOrder = order;
+        }
+    }
 
+    // Set distance
+    public void setDistance(String d){
+        if(!d.substring(d.length()-2, d.length()).equals("km")){
+            throw new StoreDistanceException();
+        }
+        distance = d;
+    }
 }

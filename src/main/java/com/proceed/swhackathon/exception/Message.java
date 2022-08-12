@@ -8,6 +8,7 @@ public class Message {
     public static final String USER_UNAUTHORIZED = "접근권한이 없는 회원입니다.";
 
     public static final String STORE_NOT_FOUND = "가게를 찾지 못했습니다.";
+    public static final String STORE_DISTANCE = "올바른 값을 입력해주세요. ex) 0.9km";
 
     public static final String ORDER_NOT_FOUND = "주문을 찾지 못했습니다.";
     public static final String ORDER_ILLEGAL = "주문 금액이 올바르지 않습니다.";
