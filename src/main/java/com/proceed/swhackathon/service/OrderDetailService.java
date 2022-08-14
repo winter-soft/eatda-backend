@@ -102,6 +102,11 @@ public class OrderDetailService {
         if(order.getOrderStatus() != OrderStatus.WAITING){
             throw new OrderStatusException();
         }
+        List<OrderDetail> byUserAndOrder = orderDetailRepository.findByUserAndOrder(user, order);
+        System.out.println("byUserAndOrder = " + byUserAndOrder);
+        if(byUserAndOrder.isEmpty()){
+            throw new UserOrderDetailNotFoundException();
+        }
 
         UserOrderDetail result = userOrderDetailRepository.findByOrderAndUserWithOrder(order, user).orElse(null);
         if(result != null){
