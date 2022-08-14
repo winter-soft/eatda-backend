@@ -1,6 +1,7 @@
 package com.proceed.swhackathon.service;
 
 import com.proceed.swhackathon.dto.menu.MenuDTO;
+import com.proceed.swhackathon.dto.store.CategoryDTO;
 import com.proceed.swhackathon.dto.store.StoreDTO;
 import com.proceed.swhackathon.dto.store.StoreDetailDTO;
 import com.proceed.swhackathon.dto.store.StoreInsertDTO;
@@ -36,63 +37,6 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final UserOrderDetailRepository userOrderDetailRepository;
-
-    // dummy data
-    @Transactional
-    public void initialize(){
-        Destination d1 = Destination.builder()
-                .name("단국대학교 기숙사 진리관 로비")
-                .build();
-        Store s1 = Store.builder()
-                .name("단대앞분식")
-                .minOrderPrice(12000)
-                .backgroundImageUrl("https://naver.com/")
-                .category(Category.HAMBURGER)
-                .infor("안녕하세요. 오전 10시부터 오후 5시까지 운영합니다.")
-                .build();
-        Menu m1 = Menu.builder()
-                .name("엄마 손맛 떡볶이")
-                .price(3500)
-                .store(s1)
-                .imageUrl("https://daum.net/")
-                .build();
-        Menu m2 = Menu.builder()
-                .name("오징어 튀김")
-                .price(3500)
-                .store(s1)
-                .imageUrl("https://daum.net/")
-                .build();
-        Menu m3 = Menu.builder()
-                .name("잔치국수")
-                .price(3500)
-                .store(s1)
-                .imageUrl("https://daum.net/")
-                .build();
-
-        Order o1 = Order.builder()
-                .orderStatus(OrderStatus.WAITING)
-                .currentAmount(30000)
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusHours(1))
-                .store(s1)
-                .destination(d1)
-                .build();
-        OrderDetail od1 = OrderDetail.builder()
-                .quantity(10)
-                .menu(m3)
-                .menuCheck(true)
-                .build();
-        od1.calTotalPrice();
-
-        s1.addMenu(m1);
-        s1.addMenu(m2);
-        s1.addMenu(m3);
-
-        destinationRepository.save(d1);
-        storeRepository.save(s1);
-        orderRepository.save(o1);
-        orderDetailRepository.save(od1);
-    }
 
     // 손봐야함
     public StoreDetailDTO storeDetail(Long orderId){
@@ -149,6 +93,12 @@ public class StoreService {
         return storeRepository
                 .findAll((org.springframework.data.domain.Pageable) pageable)
                 .map(StoreDTO::entityToDTO);
+    }
+
+    public List<StoreDTO> selectCategory(CategoryDTO categoryDTO){
+        return storeRepository.findByCategory(categoryDTO.getCategory())
+                .stream().map(StoreDTO::entityToDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional

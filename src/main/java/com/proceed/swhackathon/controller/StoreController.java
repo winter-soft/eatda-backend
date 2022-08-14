@@ -40,10 +40,8 @@ public class StoreController {
     @ApiOperation(value = "가게상세", notes = "주문번호를 받아,  가게상세 페이지로 가게정보, 해당오더정보, 메뉴, 좋아요수를 리턴합니다.")
     @GetMapping("/storeDetail/{orderId}")
     public ResponseDTO<?> storeDetail(@PathVariable Long orderId){
-//        storeService.initialize();
-        StoreDetailDTO storeDetailDTO = storeService.storeDetail(orderId);
-
-        return new ResponseDTO<>(HttpStatus.OK.value(), storeDetailDTO);
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                storeService.storeDetail(orderId));
     }
 
     @ApiOperation(value = "가게등록", notes = "매장명, 최소주문금액, 배경 이미지를 넣어 가게 정보 등록")
@@ -70,6 +68,13 @@ public class StoreController {
     public ResponseDTO<?> selectAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
                                                 Pageable pageable){
         return new ResponseDTO<>(HttpStatus.OK.value(), storeService.selectAll(pageable));
+    }
+
+    @ApiOperation(value = "카테고리별 가게 조회", notes = "")
+    @PostMapping("/category")
+    public ResponseDTO<?> selectCategory(@RequestBody CategoryDTO categoryDTO){
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                storeService.selectCategory(categoryDTO));
     }
 
     @ApiOperation(value = "가게정보 수정", notes = "id, name, minOrderPrice, backgroundImageUrl, category, infor을 받는다.")

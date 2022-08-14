@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.repository;
 
+import com.proceed.swhackathon.model.Category;
 import com.proceed.swhackathon.model.Store;
 import com.proceed.swhackathon.model.User;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.awt.print.Pageable;
+import java.util.List;
 import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
@@ -18,4 +20,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query("select s from Store s join fetch s.user u where s.user.id = :userId")
     Optional<Store> findByUser(String userId);
+
+    List<Store> findByCategory(Category category);
 }
