@@ -5,6 +5,7 @@ import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
+import com.proceed.swhackathon.exception.order.OrderStatusException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.exception.userOrderDetail.UserOrderDetailNotFoundException;
 import com.proceed.swhackathon.model.*;
@@ -97,6 +98,10 @@ public class OrderDetailService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> {
             throw new OrderNotFoundException();
         });
+
+        if(order.getOrderStatus() != OrderStatus.WAITING){
+            throw new OrderStatusException();
+        }
 
         UserOrderDetail result = userOrderDetailRepository.findByOrderAndUserWithOrder(order, user).orElse(null);
         if(result != null){

@@ -12,6 +12,7 @@ public class Message {
 
     public static final String ORDER_NOT_FOUND = "주문을 찾지 못했습니다.";
     public static final String ORDER_ILLEGAL = "주문 금액이 올바르지 않습니다.";
+    public static final String ORDER_STATUS = "처리할 수 없는 주문 상태입니다.";
 
     public static final String USER_ORDER_DETAIL_NOT_FOUND = "유저 주문을 찾을 수 없습니다.";
 
