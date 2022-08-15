@@ -21,4 +21,7 @@ public interface UserOrderDetailRepository extends JpaRepository<UserOrderDetail
 
     @Query("select uod from UserOrderDetail uod join fetch uod.order o where o = :order and uod.user = :user")
     Optional<UserOrderDetail> findByOrderAndUserWithOrder(Order order, User user);
+
+    @Query("select uod from UserOrderDetail uod join fetch uod.order o where uod.user = :user")
+    List<UserOrderDetail> findByUserWithOrder(User user);
 }

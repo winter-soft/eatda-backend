@@ -17,7 +17,7 @@ public class Menu {
     @Column(name = "menu_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "store_id")
     @JsonIgnore
     private Store store;

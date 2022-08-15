@@ -62,4 +62,11 @@ public class OrderDetailController {
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 orderDetailService.selectUOD(userId, orderId));
     }
+
+    @ApiOperation(value = "해당 유저의 모든 주문목록 가져오기", notes = "")
+    @GetMapping("/userOrderDetail/")
+    public ResponseDTO<?> selectUODAll(@AuthenticationPrincipal String userId){
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                orderDetailService.selectUODAll(userId));
+    }
 }

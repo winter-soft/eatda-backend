@@ -166,4 +166,14 @@ public class OrderDetailService {
 
         return UserOrderDetailDTO.entityToDTO(uod);
     }
+
+    public List<UserOrderDetailDTO> selectUODAll(String userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        });
+
+        return userOrderDetailRepository.findByUserWithOrder(user)
+                .stream().map(UserOrderDetailDTO::entityToDTO)
+                .collect(Collectors.toList());
+    }
 }
