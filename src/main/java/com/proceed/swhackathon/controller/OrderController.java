@@ -49,6 +49,13 @@ public class OrderController {
         return new ResponseDTO<>(HttpStatus.OK.value(), orderService.selectAll(pageable));
     }
 
+    @ApiOperation(value = "가게 인기순 정렬", notes = "5개씩 가져오고 page는 0부터 시작")
+    @GetMapping("/rank")
+    public ResponseDTO<?> selectRank(){
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                orderService.selectRank());
+    }
+
     @ApiOperation(value = "주문 상태별 가게주문 조회", notes = "")
     @PostMapping("/")
     public ResponseDTO<?> selectAll(@PageableDefault(sort = "currentAmount",direction = Sort.Direction.DESC)

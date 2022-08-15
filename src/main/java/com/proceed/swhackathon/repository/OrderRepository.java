@@ -22,4 +22,7 @@ public interface  OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByStore(Store store);
 
     Page<Order> findAllByOrderStatus(Pageable pageable, OrderStatus orderStatus);
+
+    @Query("select o from Order o join fetch o.store s where o.orderStatus = :orderStatus order by o.currentAmount desc ")
+    List<Order> findByOrderStatusWithStoreOrderByCurrentAmountDesc(OrderStatus orderStatus);
 }

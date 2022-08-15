@@ -18,6 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.proceed.swhackathon.service.UserService.isBoss;
 
 @Service
@@ -60,6 +63,13 @@ public class OrderService {
 
     public Page<OrderDTO> selectAllOrderByOrderStatus(Pageable pageable, OrderStatus orderStatus){
         return orderRepository.findAllByOrderStatus(pageable, orderStatus).map(OrderDTO::entityToDTO);
+    }
+
+    public List<OrderDTO> selectRank(){
+        return orderRepository.findByOrderStatusWithStoreOrderByCurrentAmountDesc(OrderStatus.WAITING)
+                .stream().map(OrderDTO::entityToDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Transactional
