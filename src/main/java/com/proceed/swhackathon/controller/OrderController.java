@@ -44,7 +44,7 @@ public class OrderController {
 
     @ApiOperation(value = "가게주문 조회", notes = "")
     @GetMapping("/")
-    public ResponseDTO<?> selectAll(@PageableDefault(sort = "currentAmount",direction = Sort.Direction.DESC)
+    public ResponseDTO<?> selectAll(@PageableDefault(sort = "startTime",direction = Sort.Direction.DESC)
                                     Pageable pageable){
         return new ResponseDTO<>(HttpStatus.OK.value(), orderService.selectAll(pageable));
     }
