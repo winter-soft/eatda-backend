@@ -1,10 +1,7 @@
 package com.proceed.swhackathon.service;
 
 import com.proceed.swhackathon.dto.menu.MenuDTO;
-import com.proceed.swhackathon.dto.store.CategoryDTO;
-import com.proceed.swhackathon.dto.store.StoreDTO;
-import com.proceed.swhackathon.dto.store.StoreDetailDTO;
-import com.proceed.swhackathon.dto.store.StoreInsertDTO;
+import com.proceed.swhackathon.dto.store.*;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.exception.IllegalArgumentException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
@@ -137,6 +134,13 @@ public class StoreService {
         }catch (IllegalArgumentException e){
             throw new IllegalArgumentException();
         }
+    }
+
+    public List<StoreSearchResponseDTO> search(StoreSearchReqeustDTO ssrDTO){
+        return storeRepository.findByNameContainingIgnoreCase(ssrDTO.getKeyword())
+                .stream()
+                .map(StoreSearchResponseDTO::entityToDTO)
+                .collect(Collectors.toList());
     }
 
 }

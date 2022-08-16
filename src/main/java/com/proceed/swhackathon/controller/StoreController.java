@@ -4,6 +4,7 @@ import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.store.CategoryDTO;
 import com.proceed.swhackathon.dto.store.StoreDetailDTO;
 import com.proceed.swhackathon.dto.store.StoreInsertDTO;
+import com.proceed.swhackathon.dto.store.StoreSearchReqeustDTO;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.model.Category;
 import com.proceed.swhackathon.repository.StoreRepository;
@@ -102,5 +103,12 @@ public class StoreController {
         }
 
         return new ResponseDTO<>(HttpStatus.OK.value(), categoryDTOS);
+    }
+
+    @ApiOperation(value = "Store 검색기능", notes = "")
+    @PostMapping("/search")
+    public ResponseDTO<?> search(@RequestBody StoreSearchReqeustDTO ssrDTO){
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                storeService.search(ssrDTO));
     }
 }
