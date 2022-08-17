@@ -34,7 +34,7 @@ public class Order {
     @JsonIgnore
     private Store store;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "destination_id")
     private Destination destination;
 

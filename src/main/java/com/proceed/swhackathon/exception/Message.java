@@ -17,6 +17,7 @@ public class Message {
     public static final String USER_ORDER_DETAIL_NOT_FOUND = "유저 주문을 찾을 수 없습니다.";
 
     public static final String MENU_NOT_FOUND = "메뉴를 찾지 못했습니다.";
+    public static final String MENU_NOT_MATCHING = "해당 지점에 있는 메뉴가 아닙니다.";
 
     public static final String DESTINATION_NOT_FOUND = "목적지를 찾지 못했습니다.";
 }

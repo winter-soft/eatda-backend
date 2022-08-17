@@ -4,6 +4,7 @@ import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
+import com.proceed.swhackathon.exception.menu.MenuNotMatchingStoreException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderStatusException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
@@ -11,6 +12,7 @@ import com.proceed.swhackathon.exception.userOrderDetail.UserOrderDetailNotFound
 import com.proceed.swhackathon.model.*;
 import com.proceed.swhackathon.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OrderDetailService {
@@ -36,12 +39,15 @@ public class OrderDetailService {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+        Order order = orderRepository.findOrderByIdWithStore(orderId).orElseThrow(() -> {
             throw new OrderNotFoundException();
         });
-        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> {
+        Menu menu = menuRepository.findByMenuIdWithStore(menuId).orElseThrow(() -> {
             throw new MenuNotFoundException();
         });
+
+        if(order.getStore() != menu.getStore())
+            throw new MenuNotMatchingStoreException();
 
         OrderDetail orderDetail = OrderDetail.builder()
                 .quantity(orderDetailDTO.getQuantity())
@@ -102,22 +108,26 @@ public class OrderDetailService {
         if(order.getOrderStatus() != OrderStatus.WAITING){
             throw new OrderStatusException();
         }
+        log.info("1");
         List<OrderDetail> byUserAndOrder = orderDetailRepository.findByUserAndOrder(user, order);
-        System.out.println("byUserAndOrder = " + byUserAndOrder);
+        log.info("2");
         if(byUserAndOrder.isEmpty()){
             throw new UserOrderDetailNotFoundException();
         }
-
+        log.info("3");
         UserOrderDetail result = userOrderDetailRepository.findByOrderAndUserWithOrder(order, user).orElse(null);
+        log.info("4");
         if(result != null){
             result.cancel();
             userOrderDetailRepository.delete(result);
         }
+        log.info("5");
 
         UserOrderDetail uod = UserOrderDetail.builder()
                 .order(order)
                 .user(user)
                 .build();
+        log.info("6");
 
         return userOrderDetailRepository.save(uod).getId();
     }
