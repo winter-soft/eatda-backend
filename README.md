@@ -1,11 +1,11 @@
-# swhackathon-backend
+# Swhackathon-backend API Server
 
 ## API Doc
 http://api-eatda.wintersoft.kr/api/swagger-ui.html
 
 ## ERD
 
-<img width="932" alt="스크린샷 2022-08-03 오전 10 24 50" src="https://user-images.githubusercontent.com/79779676/182504072-41ac02ce-5f35-4e0e-bff1-d020343514c8.png">
+<img width="983" alt="스크린샷 2022-08-15 오후 9 38 15" src="https://user-images.githubusercontent.com/79779676/185534395-65952145-55dc-4022-b72e-71a133b722e1.png">
 
 ## 주문을 넣는 비즈니스 로직
 
