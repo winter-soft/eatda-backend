@@ -3,6 +3,7 @@ package com.proceed.swhackathon.service;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
+import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailResponseDTO;
 import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
 import com.proceed.swhackathon.exception.menu.MenuNotMatchingStoreException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
@@ -177,13 +178,13 @@ public class OrderDetailService {
         return UserOrderDetailDTO.entityToDTO(uod);
     }
 
-    public List<UserOrderDetailDTO> selectUODAll(String userId){
+    public List<UserOrderDetailResponseDTO> selectUODAll(String userId){
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
 
         return userOrderDetailRepository.findByUserWithOrder(user)
-                .stream().map(UserOrderDetailDTO::entityToDTO)
+                .stream().map(UserOrderDetailResponseDTO::entityToDTO)
                 .collect(Collectors.toList());
     }
 }
