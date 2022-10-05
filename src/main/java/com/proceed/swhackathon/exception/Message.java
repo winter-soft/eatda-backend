@@ -9,6 +9,7 @@ public class Message {
 
     public static final String STORE_NOT_FOUND = "가게를 찾지 못했습니다.";
     public static final String STORE_DISTANCE = "올바른 값을 입력해주세요. ex) 0.9km";
+    public static final String ALREADY_STORE_BOSS_ASSIGN = "해당 사장님으로 등록된 가게가 존재합니다.";
 
     public static final String ORDER_NOT_FOUND = "주문을 찾지 못했습니다.";
     public static final String ORDER_ILLEGAL = "주문 금액이 올바르지 않습니다.";
@@ -20,4 +21,7 @@ public class Message {
     public static final String MENU_NOT_MATCHING = "해당 지점에 있는 메뉴가 아닙니다.";
 
     public static final String DESTINATION_NOT_FOUND = "목적지를 찾지 못했습니다.";
+
+    public static final String FILE_UPLOAD_FAILED = "파일 업로드에 실패했습니다.";
+    public static final String EMPTY_FILE = "파일을 찾을 수 없습니다.";
 }
