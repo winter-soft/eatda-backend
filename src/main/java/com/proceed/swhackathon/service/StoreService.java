@@ -5,6 +5,7 @@ import com.proceed.swhackathon.dto.store.*;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.exception.IllegalArgumentException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
+import com.proceed.swhackathon.exception.store.AlreadyStoreBossAssignException;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.model.*;
@@ -69,6 +70,10 @@ public class StoreService {
         });
 
         isBoss(user); // 사장인지 체크
+
+        if(!storeRepository.findByUser(user.getId()).isEmpty()){
+            throw new AlreadyStoreBossAssignException();
+        }
 
         Store store = Store.builder()
                 .name(storeDTO.getName())

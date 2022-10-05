@@ -4,12 +4,14 @@ import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.menu.MenuDTO;
 import com.proceed.swhackathon.dto.menu.MenuInsertDTO;
 import com.proceed.swhackathon.dto.menu.MenuUpdateDTO;
+import com.proceed.swhackathon.service.AwsS3Service;
 import com.proceed.swhackathon.service.MenuService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/menu")
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class MenuController {
 
     private final MenuService menuService;
+    private final AwsS3Service s3Service;
 
     @ApiOperation(value = "가게의 메뉴 정보 1건 조회", notes = "")
     @GetMapping("/{menuId}")
@@ -26,8 +29,11 @@ public class MenuController {
 
     @ApiOperation(value = "가게의 메뉴를 추가한다.", notes = "그 가게의 사장만 가능하다.")
     @PostMapping("/")
-    public ResponseDTO<?> addMenu(@AuthenticationPrincipal String userId,
-                                  @RequestBody MenuInsertDTO menuDTO){
+    public ResponseDTO<?> insertMenu(@AuthenticationPrincipal String userId,
+                                     MenuInsertDTO menuDTO,
+                                     @RequestPart("file") MultipartFile multipartFile){
+        String imgPath = s3Service.upload(multipartFile);
+        menuDTO.setImageUrl(imgPath);
         return new ResponseDTO<>(HttpStatus.OK.value(), menuService.addMenu(userId, menuDTO));
     }
 
