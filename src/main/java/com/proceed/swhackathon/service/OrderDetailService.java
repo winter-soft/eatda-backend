@@ -51,10 +51,20 @@ public class OrderDetailService {
         if(order.getStore() != menu.getStore())
             throw new MenuNotMatchingStoreException();
 
+
+        /*
+         만약, OrderDetail에 Order가 다른 true 값이 존재한다면, 모두 false로 바꾼다.
+         */
+        List<OrderDetail> orderDetails = orderDetailRepository.findAllByMenuCheckIsFalseAndOrder(user, order);
+        for(OrderDetail od : orderDetails){
+            log.info("findAllByMenuCheckIsFalseAndOrder execute! : 기존 장바구니를 삭제합니다.");
+            od.setMenuCheck(false);
+        }
+
         /*
          기존에 동일한 딜에 동일한 메뉴를 추가할때 합쳐주는 로직
          */
-        Optional<OrderDetail> orderDetail = orderDetailRepository.findByUserAndOrderAndMenu(user, order, menu);
+        Optional<OrderDetail> orderDetail = orderDetailRepository.findByUserAndOrderAndMenuV2(user, order, menu);
         OrderDetail od;
         if(orderDetail.isEmpty()) {
             od = OrderDetail.builder() // 새로운 객체 생성
@@ -66,6 +76,7 @@ public class OrderDetailService {
             od.setOrder(order);
         }else{
             od = orderDetail.get();
+            od.setMenuCheck(true);
             od.setQuantity(od.getQuantity() + orderDetailDTO.getQuantity());
         }
         od.calTotalPrice(); // price 다시 계산
