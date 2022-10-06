@@ -1,7 +1,6 @@
 package com.proceed.swhackathon.repository;
 
 import com.proceed.swhackathon.model.*;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -24,12 +23,6 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
     @Query("select od from OrderDetail od join fetch od.menu m where od.user = :user and od.order = :order and  m = :menu")
     Optional<OrderDetail> findByUserAndOrderAndMenu(User user, Order order, Menu menu);
 
-    @Query("select od from OrderDetail od join fetch od.menu m where od.user = :user and od.order = :order and  m = :menu and od.menuCheck = true")
-    Optional<OrderDetail> findByUserAndOrderAndMenuV2(User user, Order order, Menu menu);
-
     @Query("select od from OrderDetail od join fetch od.userOrderDetail uod where uod = :uod and od.menuCheck = true and od.user = :user")
     List<OrderDetail> selectUOD(UserOrderDetail uod, User user);
-
-    @Query("select od from OrderDetail od join fetch od.order odo where od.menuCheck = true and odo <> :order and od.user = :user")
-    List<OrderDetail> findAllByMenuCheckIsFalseAndOrder(User user, Order order);
 }

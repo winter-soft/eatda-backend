@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,37 +50,16 @@ public class OrderDetailService {
         if(order.getStore() != menu.getStore())
             throw new MenuNotMatchingStoreException();
 
+        OrderDetail orderDetail = OrderDetail.builder()
+                .quantity(orderDetailDTO.getQuantity())
+                .menuCheck(true)
+                .build();
+        orderDetail.setUser(user);
+        orderDetail.setMenu(menu);
+        orderDetail.setOrder(order);
+        orderDetail.calTotalPrice();
 
-        /*
-         만약, OrderDetail에 Order가 다른 true 값이 존재한다면, 모두 false로 바꾼다.
-         */
-        List<OrderDetail> orderDetails = orderDetailRepository.findAllByMenuCheckIsFalseAndOrder(user, order);
-        for(OrderDetail od : orderDetails){
-            log.info("findAllByMenuCheckIsFalseAndOrder execute! : 기존 장바구니를 삭제합니다.");
-            od.setMenuCheck(false);
-        }
-
-        /*
-         기존에 동일한 딜에 동일한 메뉴를 추가할때 합쳐주는 로직
-         */
-        Optional<OrderDetail> orderDetail = orderDetailRepository.findByUserAndOrderAndMenuV2(user, order, menu);
-        OrderDetail od;
-        if(orderDetail.isEmpty()) {
-            od = OrderDetail.builder() // 새로운 객체 생성
-                    .quantity(orderDetailDTO.getQuantity())
-                    .menuCheck(true)
-                    .build();
-            od.setUser(user);
-            od.setMenu(menu);
-            od.setOrder(order);
-        }else{
-            od = orderDetail.get();
-            od.setMenuCheck(true);
-            od.setQuantity(od.getQuantity() + orderDetailDTO.getQuantity());
-        }
-        od.calTotalPrice(); // price 다시 계산
-
-        return OrderDetailDTO.entityToDTO(orderDetailRepository.save(od));
+        return OrderDetailDTO.entityToDTO(orderDetailRepository.save(orderDetail));
     }
 
     public List<OrderDetailDTO> selectCart(String userId, Long orderId) {
@@ -170,7 +148,6 @@ public class OrderDetailService {
         List<OrderDetail> ods = orderDetailRepository.findByUserAndOrder(user, order);
         for (OrderDetail od : ods) {
             od.setUserOrderDetail(uod);
-            od.setMenuCheck(false); // 주문 완료된 장바구니 요소들은 모두 menuCheck를 해제해준다.
         }
 
         uod.setOrderDetails(ods);
@@ -178,7 +155,6 @@ public class OrderDetailService {
 
         // 최근 주문 오더 수정
         order.getStore().setRecentlyOrder(order);
-
 
         return UserOrderDetailDTO.entityToDTO(uod);
     }
