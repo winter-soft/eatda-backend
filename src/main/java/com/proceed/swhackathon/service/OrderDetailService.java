@@ -156,6 +156,11 @@ public class OrderDetailService {
         // 최근 주문 오더 수정
         order.getStore().setRecentlyOrder(order);
 
+        // 주문 완료된 장바구니 요소들은 모두 menuCheck를 해제해준다.
+        for (OrderDetail od : ods){
+            od.setMenuCheck(false);
+        }
+
         return UserOrderDetailDTO.entityToDTO(uod);
     }
 
@@ -172,7 +177,7 @@ public class OrderDetailService {
         });
 
         List<OrderDetail> ods = orderDetailRepository.selectUOD(uod, user);
-        ods.removeIf(od -> !od.isMenuCheck());
+//        ods.removeIf(od -> !od.isMenuCheck());
         uod.setOrderDetails(ods);
 
         return UserOrderDetailDTO.entityToDTO(uod);
