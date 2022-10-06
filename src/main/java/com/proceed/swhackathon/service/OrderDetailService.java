@@ -170,6 +170,7 @@ public class OrderDetailService {
         List<OrderDetail> ods = orderDetailRepository.findByUserAndOrder(user, order);
         for (OrderDetail od : ods) {
             od.setUserOrderDetail(uod);
+            od.setMenuCheck(false); // 주문 완료된 장바구니 요소들은 모두 menuCheck를 해제해준다.
         }
 
         uod.setOrderDetails(ods);
@@ -177,6 +178,7 @@ public class OrderDetailService {
 
         // 최근 주문 오더 수정
         order.getStore().setRecentlyOrder(order);
+
 
         return UserOrderDetailDTO.entityToDTO(uod);
     }
