@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,16 +51,26 @@ public class OrderDetailService {
         if(order.getStore() != menu.getStore())
             throw new MenuNotMatchingStoreException();
 
-        OrderDetail orderDetail = OrderDetail.builder()
-                .quantity(orderDetailDTO.getQuantity())
-                .menuCheck(true)
-                .build();
-        orderDetail.setUser(user);
-        orderDetail.setMenu(menu);
-        orderDetail.setOrder(order);
-        orderDetail.calTotalPrice();
+        /*
+         기존에 동일한 딜에 동일한 메뉴를 추가할때 합쳐주는 로직
+         */
+        Optional<OrderDetail> orderDetail = orderDetailRepository.findByUserAndOrderAndMenu(user, order, menu);
+        OrderDetail od;
+        if(orderDetail.isEmpty()) {
+            od = OrderDetail.builder() // 새로운 객체 생성
+                    .quantity(orderDetailDTO.getQuantity())
+                    .menuCheck(true)
+                    .build();
+            od.setUser(user);
+            od.setMenu(menu);
+            od.setOrder(order);
+        }else{
+            od = orderDetail.get();
+            od.setQuantity(od.getQuantity() + orderDetailDTO.getQuantity());
+        }
+        od.calTotalPrice(); // price 다시 계산
 
-        return OrderDetailDTO.entityToDTO(orderDetailRepository.save(orderDetail));
+        return OrderDetailDTO.entityToDTO(orderDetailRepository.save(od));
     }
 
     public List<OrderDetailDTO> selectCart(String userId, Long orderId) {
