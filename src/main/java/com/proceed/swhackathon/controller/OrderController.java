@@ -22,9 +22,10 @@ public class OrderController {
 
     @ApiOperation(value = "가게 주문 생성", notes = "가게의 Order주문을 오픈한다.")
     @PostMapping("/{storeId}")
-    public ResponseDTO<?> insert(@RequestBody OrderInsertDTO orderDTO,
+    public ResponseDTO<?> insert(@AuthenticationPrincipal String userId,
+                                 @RequestBody OrderInsertDTO orderDTO,
                                  @PathVariable Long storeId){
-        return new ResponseDTO<>(HttpStatus.OK.value(), orderService.insert(orderDTO, storeId));
+        return new ResponseDTO<>(HttpStatus.OK.value(), orderService.insert(userId, orderDTO, storeId));
     }
 
     @ApiOperation(value = "가게 주문 상태 변경", notes = "가게 주문상태를 변경한다.(사장만 가능)")

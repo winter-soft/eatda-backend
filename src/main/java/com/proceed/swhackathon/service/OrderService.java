@@ -33,7 +33,13 @@ public class OrderService {
     private final DestinationRepository destinationRepository;
 
     @Transactional
-    public OrderDTO insert(OrderInsertDTO orderDTO, Long storeId){
+    public OrderDTO insert(String userId, OrderInsertDTO orderDTO, Long storeId){
+
+        // 사장인지 체크
+        isBoss(userRepository.findById(userId).orElseThrow(() -> {
+            throw new UserNotFoundException();
+        }));
+
         Store store = storeRepository.findById(storeId).orElseThrow(() -> {
             throw new StoreNotFoundException();
         });
