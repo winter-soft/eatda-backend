@@ -12,12 +12,14 @@ import com.proceed.swhackathon.repository.DestinationRepository;
 import com.proceed.swhackathon.repository.OrderRepository;
 import com.proceed.swhackathon.repository.StoreRepository;
 import com.proceed.swhackathon.repository.UserRepository;
+import com.proceed.swhackathon.utils.LocalDateTimeFormatUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,6 +67,15 @@ public class OrderService {
 
     public Page<OrderDTO> selectAll(Pageable pageable){
         return orderRepository.findAll(pageable).map(OrderDTO::entityToDTO);
+    }
+
+    public List<OrderDTO> selectDestinationByTimeIndex(Long destinationId, Long timeIndex){
+        // TimeIndex를 통해 인덱스에 맞는 날짜와 시간을 계산한다.
+        LocalDateTime dealTime = LocalDateTimeFormatUtils.calcTime(timeIndex);
+        String fmt_dealTime = LocalDateTimeFormatUtils.dateHour(dealTime);
+
+        List<Order> orders = orderRepository.findAllByEndTime(destinationId, fmt_dealTime);
+        return orders.stream().map(OrderDTO::entityToDTO).collect(Collectors.toList());
     }
 
     public Page<OrderDTO> selectAllOrderByOrderStatus(Pageable pageable, OrderStatus orderStatus){

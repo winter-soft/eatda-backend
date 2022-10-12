@@ -57,6 +57,15 @@ public class OrderController {
                 orderService.selectRank());
     }
 
+    @ApiOperation(value = "목적지별 시간 정렬", notes = "오늘점심: 0, 오늘저녁: 1, 내일점심: 2, 내일저녁: 3")
+    @GetMapping("/{destinationId}/{timeIndex}")
+    public ResponseDTO<?> selectDestinationByTimeIndex(@PathVariable Long destinationId,
+                                                       @PathVariable Long timeIndex){
+        System.out.println("destinationId = " + destinationId + ", timeIndex = " + timeIndex);
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                orderService.selectDestinationByTimeIndex(destinationId, timeIndex));
+    }
+
     @ApiOperation(value = "주문 상태별 가게주문 조회", notes = "")
     @PostMapping("/")
     public ResponseDTO<?> selectAll(@PageableDefault(sort = "currentAmount",direction = Sort.Direction.DESC)
