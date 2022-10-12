@@ -70,6 +70,11 @@ public class OrderService {
     }
 
     public List<OrderDTO> selectDestinationByTimeIndex(Long destinationId, Long timeIndex){
+        // Destination 예외처리
+        destinationRepository.findById(destinationId).orElseThrow(() -> {
+            throw new DestinationNotFoundException();
+        });
+
         // TimeIndex를 통해 인덱스에 맞는 날짜와 시간을 계산한다.
         LocalDateTime dealTime = LocalDateTimeFormatUtils.calcTime(timeIndex);
         String fmt_dealTime = LocalDateTimeFormatUtils.dateHour(dealTime);

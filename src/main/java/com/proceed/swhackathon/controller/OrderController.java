@@ -3,6 +3,7 @@ package com.proceed.swhackathon.controller;
 import com.proceed.swhackathon.dto.order.OrderInsertDTO;
 import com.proceed.swhackathon.dto.order.OrderStatusDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
+import com.proceed.swhackathon.exception.order.OrderTimeIndexIllegalArgumentException;
 import com.proceed.swhackathon.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +62,9 @@ public class OrderController {
     @GetMapping("/{destinationId}/{timeIndex}")
     public ResponseDTO<?> selectDestinationByTimeIndex(@PathVariable Long destinationId,
                                                        @PathVariable Long timeIndex){
-        System.out.println("destinationId = " + destinationId + ", timeIndex = " + timeIndex);
+        if(timeIndex < 0L || timeIndex >= 4L) {
+            throw new OrderTimeIndexIllegalArgumentException();
+        }
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 orderService.selectDestinationByTimeIndex(destinationId, timeIndex));
     }
