@@ -1,6 +1,7 @@
 package com.proceed.swhackathon.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proceed.swhackathon.dto.store.StoreInOrderDTO;
 import com.proceed.swhackathon.model.Destination;
 import com.proceed.swhackathon.model.Order;
 import com.proceed.swhackathon.model.OrderStatus;
@@ -22,20 +23,9 @@ public class OrderDTO {
     private int currentAmount; // 현재 달성 금액
     private LocalDateTime startTime; // 시작시간
     private LocalDateTime endTime; // 마감시간
-    @JsonIgnore
-    private Store store;
+//    @JsonIgnore
+    private StoreInOrderDTO store;
     private Destination destination;
-
-    public Order dtoToEntity(){
-        return Order.builder()
-                .orderStatus(this.orderStatus)
-                .currentAmount(this.currentAmount)
-                .startTime(this.startTime)
-                .endTime(this.endTime)
-                .store(this.store)
-                .destination(this.destination)
-                .build();
-    }
 
     public static OrderDTO entityToDTO(Order o){
         return OrderDTO.builder()
@@ -44,7 +34,7 @@ public class OrderDTO {
                 .currentAmount(o.getCurrentAmount())
                 .startTime(o.getStartTime())
                 .endTime(o.getEndTime())
-                .store(o.getStore())
+                .store(StoreInOrderDTO.entityToDTO(o.getStore()))
                 .destination(o.getDestination())
                 .build();
     }

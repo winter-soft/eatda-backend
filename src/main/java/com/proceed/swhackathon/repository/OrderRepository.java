@@ -32,4 +32,6 @@ public interface  OrderRepository extends JpaRepository<Order, Long> {
 
     @Query(value = "select * from ORDERS o where DATE_FORMAT(o.endTime, '%Y-%m-%d %H:%i') = :dateTime", nativeQuery = true)
     List<Order> findAllByEndTime(String dateTime);
+
+
 }
