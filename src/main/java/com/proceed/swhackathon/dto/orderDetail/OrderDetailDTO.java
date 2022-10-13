@@ -20,7 +20,7 @@ public class OrderDetailDTO {
     private int totalPrice;
     private boolean menuCheck = true; // true면 체크, false은 체크해제
     private User user;
-    @JsonIgnore
+//    @JsonIgnore
     private Order order;
     private Menu menu;
 
