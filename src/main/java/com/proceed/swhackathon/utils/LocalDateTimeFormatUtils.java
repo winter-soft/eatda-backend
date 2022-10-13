@@ -8,6 +8,7 @@ import java.time.format.SignStyle;
 import static java.time.temporal.ChronoField.*;
 
 public class LocalDateTimeFormatUtils {
+
     /**
      * @param ldt
      * LocalDateTime을 입력받아서 'yyyy-dd-mm hh'형식으로 포맷팅한다.
@@ -23,6 +24,8 @@ public class LocalDateTimeFormatUtils {
                 .appendValue(DAY_OF_MONTH, 2)
                 .appendLiteral(' ')
                 .appendValue(HOUR_OF_DAY, 2)
+                .appendLiteral(':')
+                .appendValue(MINUTE_OF_HOUR, 2)
                 .toFormatter();
 
         return ldt.format(dtf);

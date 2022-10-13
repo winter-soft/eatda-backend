@@ -30,11 +30,10 @@ public class OrderDetailController {
     }
 
     @ApiOperation(value = "사용자별 장바구니 조회", notes = "")
-    @GetMapping("/{orderId}")
-    public ResponseDTO<?> selectCart(@AuthenticationPrincipal String userId,
-                                     @PathVariable Long orderId){
+    @GetMapping("/")
+    public ResponseDTO<?> selectCart(@AuthenticationPrincipal String userId){
         return new ResponseDTO<>(HttpStatus.OK.value(),
-                orderDetailService.selectCart(userId, orderId));
+                orderDetailService.selectCart(userId));
     }
 
     @ApiOperation(value = "메뉴 체크", notes = "true면 false, false면 true로 변경")

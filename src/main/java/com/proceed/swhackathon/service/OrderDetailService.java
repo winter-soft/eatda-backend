@@ -62,15 +62,12 @@ public class OrderDetailService {
         return OrderDetailDTO.entityToDTO(orderDetailRepository.save(orderDetail));
     }
 
-    public List<OrderDetailDTO> selectCart(String userId, Long orderId) {
+    public List<OrderDetailDTO> selectCart(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
-            throw new OrderNotFoundException();
-        });
 
-        return orderDetailRepository.findByUserAndOrder(user, order)
+        return orderDetailRepository.findByUser(user)
                 .stream()
                 .map(OrderDetailDTO::entityToDTO)
                 .collect(Collectors.toList());

@@ -69,7 +69,15 @@ public class OrderService {
         return orderRepository.findAll(pageable).map(OrderDTO::entityToDTO);
     }
 
-    public List<OrderDTO> selectDestinationByTimeIndex(Long destinationId, Long timeIndex){
+    public List<OrderDTO> selectOrderByTimeIndex(Long timeIndex){
+        LocalDateTime dealTime = LocalDateTimeFormatUtils.calcTime(timeIndex);
+        String fmt_dealTime = LocalDateTimeFormatUtils.dateHour(dealTime);
+
+        List<Order> orders = orderRepository.findAllByEndTime(fmt_dealTime);
+        return orders.stream().map(OrderDTO::entityToDTO).collect(Collectors.toList());
+    }
+
+    public List<OrderDTO> selectOrderByDestinationAndTimeIndex(Long destinationId, Long timeIndex){
         // Destination 예외처리
         destinationRepository.findById(destinationId).orElseThrow(() -> {
             throw new DestinationNotFoundException();
@@ -79,7 +87,7 @@ public class OrderService {
         LocalDateTime dealTime = LocalDateTimeFormatUtils.calcTime(timeIndex);
         String fmt_dealTime = LocalDateTimeFormatUtils.dateHour(dealTime);
 
-        List<Order> orders = orderRepository.findAllByEndTime(destinationId, fmt_dealTime);
+        List<Order> orders = orderRepository.findAllByDestinationAndEndTime(destinationId, fmt_dealTime);
         return orders.stream().map(OrderDTO::entityToDTO).collect(Collectors.toList());
     }
 
