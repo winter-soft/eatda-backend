@@ -58,15 +58,25 @@ public class OrderController {
                 orderService.selectRank());
     }
 
+    @ApiOperation(value = "시간 정렬", notes = "오늘점심: 0, 오늘저녁: 1, 내일점심: 2, 내일저녁: 3")
+    @GetMapping("/time/{timeIndex}")
+    public ResponseDTO<?> selectTimeIndex(@PathVariable Long timeIndex){
+        if(timeIndex < 0L || timeIndex >= 4L) {
+            throw new OrderTimeIndexIllegalArgumentException();
+        }
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                orderService.selectOrderByTimeIndex(timeIndex));
+    }
+
     @ApiOperation(value = "목적지별 시간 정렬", notes = "오늘점심: 0, 오늘저녁: 1, 내일점심: 2, 내일저녁: 3")
-    @GetMapping("/{destinationId}/{timeIndex}")
+    @GetMapping("/time/{destinationId}/{timeIndex}")
     public ResponseDTO<?> selectDestinationByTimeIndex(@PathVariable Long destinationId,
                                                        @PathVariable Long timeIndex){
         if(timeIndex < 0L || timeIndex >= 4L) {
             throw new OrderTimeIndexIllegalArgumentException();
         }
         return new ResponseDTO<>(HttpStatus.OK.value(),
-                orderService.selectDestinationByTimeIndex(destinationId, timeIndex));
+                orderService.selectOrderByDestinationAndTimeIndex(destinationId, timeIndex));
     }
 
     @ApiOperation(value = "주문 상태별 가게주문 조회", notes = "")

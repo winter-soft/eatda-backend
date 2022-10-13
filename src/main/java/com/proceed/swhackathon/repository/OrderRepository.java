@@ -28,5 +28,8 @@ public interface  OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByOrderStatusWithStoreOrderByCurrentAmountDesc(OrderStatus orderStatus);
 
     @Query(value = "select * from ORDERS o inner join Destination d ON o.destination_id = d.destination_id where o.destination_id = :destination and DATE_FORMAT(o.endTime, '%Y-%m-%d %H:%i') = :dateTime", nativeQuery = true)
-    List<Order> findAllByEndTime(Long destination, String dateTime);
+    List<Order> findAllByDestinationAndEndTime(Long destination, String dateTime);
+
+    @Query(value = "select * from ORDERS o where DATE_FORMAT(o.endTime, '%Y-%m-%d %H:%i') = :dateTime", nativeQuery = true)
+    List<Order> findAllByEndTime(String dateTime);
 }
