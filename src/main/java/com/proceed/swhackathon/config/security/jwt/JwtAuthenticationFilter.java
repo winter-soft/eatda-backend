@@ -1,5 +1,8 @@
 package com.proceed.swhackathon.config.security.jwt;
 
+import com.proceed.swhackathon.exception.user.UserTokenExpiredException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -17,6 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Slf4j
 @Component
@@ -31,11 +37,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = parseBearerToken(request);
             log.info("Filter is running...");
 
+            // request method가 OPTIONS일 경우 JWT 검사 x [preflight]
+            if(request.getMethod().equals("OPTIONS")){
+                log.info("method is [OPTIONS]. so server don't check jwt");
+                return ;
+            }
+
             // 토큰 검사하기. JWT이므로 인가 서버에 요청하지 않고도 검증 가능
             if(token != null && !token.equalsIgnoreCase("null")){
                 // userId 가져오기. 위조된 경우 예외 처리된다.
-                String userId = tokenProvider.validateAndGetUserId(token);
+                Claims claims = tokenProvider.validateAndGetUserId(token);
+                String userId = claims.getSubject();
+                Date expiration = claims.getExpiration();
                 log.info("Authenticated user ID : "+userId);
+                log.info("Authenticated expiration : "+expiration);
+
                 // 인증 완료. SecurityContextHolder에 등록해야 인증된 사용자라고 생각한다.
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userId, // 인증된 사용자의 정보. 문자열이 아니어도 아무것이나 넣을 수 있다. 보통 UserDetails 오브젝트를 넣음
@@ -50,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(securityContext);
             }
         }catch (Exception e){
-            logger.error("Could not set user authentication in security context",e);
+            logger.error("Could not set user authentication in security context" , e);
         }
 
         filterChain.doFilter(request,response);
@@ -63,5 +79,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    @Override
+    public void destroy() {
+        log.info("hello!");
+        super.destroy();
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.proceed.swhackathon.model.User;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -19,10 +20,11 @@ public class TokenProvider {
     private String SECRET_KEY;
 
     public String create(User user){
-        // 기한은 지금부터 1일로 설정
+        // 기한은 지금부터 3시간으로 설정
         Date expiryDate = Date.from(
                 Instant.now()
-                        .plus(1, ChronoUnit.DAYS));
+                        .plus(3, ChronoUnit.HOURS));
+        log.info("token expiryDate : {}", expiryDate);
 
         /*
         { // header
@@ -47,7 +49,7 @@ public class TokenProvider {
                 .compact();
     }
 
-    public String validateAndGetUserId(String token){
+    public Claims validateAndGetUserId(String token){
         // parseClaimsJws 메서드가 Base64로 디코딩 및 파싱
         // 헤더와 페이로드를 setSigningKey로 넘어온 시크릿을 이용해 서명한 후 token의 서명과 비교
         // 위조되지 않았다면 페이로드(Claims) 리턴, 위조라면 예외를 날림
@@ -56,6 +58,6 @@ public class TokenProvider {
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.getSubject(); // 사용자의 아이디 리턴
+        return claims; // 사용자의 아이디 리턴
     }
 }
