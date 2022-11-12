@@ -3,6 +3,7 @@ package com.proceed.swhackathon.service;
 import com.proceed.swhackathon.config.security.jwt.TokenProvider;
 import com.proceed.swhackathon.dto.user.UserDTO;
 import com.proceed.swhackathon.exception.user.UserDuplicatedException;
+import com.proceed.swhackathon.exception.user.UserInformationEmptyException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
 import com.proceed.swhackathon.model.Role;
@@ -26,12 +27,15 @@ public class UserService {
     private final UserRepository userRepository;
 
     public User create(final User userEntity){
-        if(userEntity == null || userEntity.getPlatformId()==null){
-            throw new UserNotFoundException();
+        if(userEntity == null || userEntity.getPlatformId() == null || userEntity.getPhoneNumber() == null){
+            throw new UserInformationEmptyException();
         }
 
-        if(userRepository.existsByPlatformTypeAndPlatformId(userEntity.getPlatformType(), userEntity.getPlatformId())){
-            throw new UserDuplicatedException();
+        if(userRepository.existsByPlatformTypeAndPlatformIdAndPhoneNumber(
+                userEntity.getPlatformType(),
+                userEntity.getPlatformId(),
+                userEntity.getPhoneNumber())){
+            throw new UserDuplicatedException(); // 유저 중복 Exception
         }
 
         return userRepository.save(userEntity);

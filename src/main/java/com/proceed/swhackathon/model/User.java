@@ -37,6 +37,10 @@ public class User {
 
     private String profileImageUrl;
 
+    private String token;
+
+    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

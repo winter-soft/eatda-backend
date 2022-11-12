@@ -16,5 +16,6 @@ public class UserRegisterDTO {
     private String email;
     private String username;
     private String profileImageUrl;
+    private String phoneNumber;
     private Role role = Role.USER;
 }

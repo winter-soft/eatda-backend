@@ -41,6 +41,7 @@ public class UserController {
                     .username(userDTO.getUsername())
                     .profileImageUrl(userDTO.getProfileImageUrl())
                     .role(Role.USER)
+                    .phoneNumber(userDTO.getPhoneNumber())
                     .build();
 
             User registerUser = userService.create(user);

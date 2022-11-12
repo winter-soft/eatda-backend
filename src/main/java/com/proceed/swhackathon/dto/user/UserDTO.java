@@ -19,6 +19,7 @@ public class UserDTO {
     private String email;
     private String profileImageUrl;
     private String username;
+    private String phoneNumber;
     private Role role = Role.USER;
 
     public static UserDTO entityToDTO(User user){
@@ -30,6 +31,7 @@ public class UserDTO {
                 .profileImageUrl(user.getProfileImageUrl())
                 .username(user.getUsername())
                 .role(user.getRole())
+                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 }
