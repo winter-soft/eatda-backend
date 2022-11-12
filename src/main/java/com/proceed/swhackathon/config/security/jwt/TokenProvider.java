@@ -64,4 +64,17 @@ public class TokenProvider {
                 .getBody();
         return claims; // 사용자의 아이디 리턴
     }
+
+    public boolean isValidToken(String token) {
+        try {
+            Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
 }

@@ -7,6 +7,7 @@ public class Message {
     public static final String USER_DUPLICATED = "중복된 회원입니다.";
     public static final String USER_UNAUTHORIZED = "접근권한이 없는 회원입니다.";
     public static final String USER_TOKEN_EXPIRED = "해당유저의 토큰이 만료되었습니다.";
+    public static final String USER_TOKEN_NOT_FOUND = "토큰 정보를 찾을 수 없습니다.";
     public static final String USER_INFORMATION_EMPTY = "유저 필수정보 중 비어있는 칸이 존재합니다.";
 
     public static final String JWT_TOKEN_EXPIRED = "JWT 토큰이 만료되었습니다.";

@@ -2,10 +2,8 @@ package com.proceed.swhackathon.service;
 
 import com.proceed.swhackathon.config.security.jwt.TokenProvider;
 import com.proceed.swhackathon.dto.user.UserDTO;
-import com.proceed.swhackathon.exception.user.UserDuplicatedException;
-import com.proceed.swhackathon.exception.user.UserInformationEmptyException;
-import com.proceed.swhackathon.exception.user.UserNotFoundException;
-import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
+import com.proceed.swhackathon.dto.user.UserTokenDTO;
+import com.proceed.swhackathon.exception.user.*;
 import com.proceed.swhackathon.model.Role;
 import com.proceed.swhackathon.model.User;
 import com.proceed.swhackathon.repository.UserRepository;
@@ -14,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import static com.proceed.swhackathon.dto.user.UserDTO.entityToDTO;
 
@@ -48,16 +47,35 @@ public class UserService {
         return entityToDTO(user);
     }
 
+    @Transactional
     public UserDTO getByCredentials(final String platformType, final String platformId){
-        final User originalUser = userRepository.findByPlatformIdAndAndPlatformType(platformId, platformType)
+        User originalUser = userRepository.findByPlatformIdAndAndPlatformType(platformId, platformType)
                 .orElseThrow(()->{
                     throw new UserNotFoundException();
                 });
         UserDTO userDTO = UserDTO.entityToDTO(originalUser);
         final String token = tokenProvider.create(originalUser);
+
+        originalUser.setToken(token);
+
         userDTO.setToken(token);
         return userDTO;
     }
+
+    // 가장 최근에 재발급받은 토큰이였을 경우, 재발급을 해주고 그렇지 않은경우는 에러를 발생시킨다.
+    @Transactional
+    public UserTokenDTO refreshToken(String token){
+        User user = userRepository.findByToken(token).orElseThrow(() -> {
+            throw new UserTokenNotFoundException();
+        });
+        token = tokenProvider.create(user); // 토큰 재발급
+        user.setToken(token);
+
+        return UserTokenDTO.builder()
+                .token(token)
+                .build();
+    }
+
 
     // 사장인지 체크
     public static void isBoss(User user){

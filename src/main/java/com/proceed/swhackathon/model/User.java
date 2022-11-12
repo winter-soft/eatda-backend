@@ -1,9 +1,6 @@
 package com.proceed.swhackathon.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -37,6 +34,7 @@ public class User {
 
     private String profileImageUrl;
 
+    @Setter
     private String token;
 
     private String phoneNumber;
