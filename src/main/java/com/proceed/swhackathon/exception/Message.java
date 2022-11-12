@@ -6,6 +6,7 @@ public class Message {
     public static final String USER_NOT_FOUND = "등록되지 않은 회원입니다.";
     public static final String USER_DUPLICATED = "중복된 회원입니다.";
     public static final String USER_UNAUTHORIZED = "접근권한이 없는 회원입니다.";
+    public static final String USER_TOKEN_EXPIRED = "해당유저의 토큰이 만료되었습니다.";
 
     public static final String STORE_NOT_FOUND = "가게를 찾지 못했습니다.";
     public static final String STORE_DISTANCE = "올바른 값을 입력해주세요. ex) 0.9km";

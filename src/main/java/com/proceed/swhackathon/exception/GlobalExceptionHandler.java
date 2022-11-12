@@ -3,6 +3,7 @@ package com.proceed.swhackathon.exception;
 import com.nimbusds.oauth2.sdk.ErrorResponse;
 import com.proceed.swhackathon.dto.ExceptionDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.MethodNotSupportedException;
 import org.springframework.http.HttpStatus;
@@ -37,11 +38,16 @@ public class GlobalExceptionHandler {
         return new ResponseDTO<>(HttpStatus.BAD_REQUEST.value(), new ExceptionDTO(e.getMessage()));
     }
 
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
     protected ResponseDTO<ExceptionDTO> handleMaxUploadSizeExceededException(
             MaxUploadSizeExceededException e) {
         log.info("handleMaxUploadSizeExceededException", e);
 
         return new ResponseDTO<>(HttpStatus.BAD_REQUEST.value(), new ExceptionDTO(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = ExpiredJwtException.class)
+    protected ResponseDTO<ExceptionDTO> ExpiredJwtException(ExpiredJwtException e){
+        return new ResponseDTO<>(HttpStatus.UNAUTHORIZED.value(), new ExceptionDTO(Message.USER_TOKEN_EXPIRED));
     }
 }
