@@ -206,7 +206,9 @@ public class OrderDetailService {
             throw new UserNotFoundException();
         });
 
-        return userOrderDetailRepository.findByUserWithOrder(user)
+        log.info("selectUODAll is Running...");
+
+        return userOrderDetailRepository.findAllByUserWithOrderOrderByIdDesc(user)
                 .stream().map(UserOrderDetailResponseDTO::entityToDTO)
                 .collect(Collectors.toList());
     }
