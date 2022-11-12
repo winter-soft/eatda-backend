@@ -1,10 +1,18 @@
 package com.proceed.swhackathon.config.security.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.oauth2.sdk.ErrorObject;
+import com.proceed.swhackathon.dto.ExceptionDTO;
+import com.proceed.swhackathon.dto.ResponseDTO;
+import com.proceed.swhackathon.exception.Message;
+import com.proceed.swhackathon.exception.SwhackathonException;
+import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.exception.user.UserTokenExpiredException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -19,6 +27,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -29,6 +38,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -36,12 +46,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 요청에서 토큰 가져오기
             String token = parseBearerToken(request);
             log.info("Filter is running...");
-
-            // request method가 OPTIONS일 경우 JWT 검사 x [preflight]
-            if(request.getMethod().equals("OPTIONS")){
-                log.info("method is [OPTIONS]. so server don't check jwt");
-                return ;
-            }
 
             // 토큰 검사하기. JWT이므로 인가 서버에 요청하지 않고도 검증 가능
             if(token != null && !token.equalsIgnoreCase("null")){
@@ -65,11 +69,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // SecurityContextHolder에 SecurityContext 설정
                 SecurityContextHolder.setContext(securityContext);
             }
-        }catch (Exception e){
-            logger.error("Could not set user authentication in security context" , e);
+
+            filterChain.doFilter(request,response);
+        }catch (ExpiredJwtException e){
+            logger.error("Could not set user authentication in security context {}" , e);
+            jwtExceptionHandler(response, Message.JWT_TOKEN_EXPIRED);
+        }catch (UnsupportedJwtException e){
+            logger.error("Could not set user authentication in security context {}" , e);
+            jwtExceptionHandler(response, Message.JWT_UNSUPPORTED);
+        }catch (MalformedJwtException e){
+            logger.error("Could not set user authentication in security context {}" , e);
+            jwtExceptionHandler(response, Message.JWT_MALFORMED);
+        }catch (SignatureException e){
+            logger.error("Could not set user authentication in security context {}" , e);
+            jwtExceptionHandler(response, Message.JWT_SIGNATURE);
+        }catch (IllegalArgumentException e){
+            logger.error("Could not set user authentication in security context {}" , e);
+            jwtExceptionHandler(response, Message.JWT_ILLEGAL_ARGUMENT);
         }
 
-        filterChain.doFilter(request,response);
     }
 
     private String parseBearerToken(HttpServletRequest request){
@@ -81,9 +99,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    @Override
-    public void destroy() {
-        log.info("hello!");
-        super.destroy();
+    private void jwtExceptionHandler(HttpServletResponse response, String message) throws IOException{
+        ResponseDTO<String> dto = new ResponseDTO<>(HttpStatus.UNAUTHORIZED.value(), message);
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        objectMapper.writeValue(response.getWriter(), dto);
+
     }
 }

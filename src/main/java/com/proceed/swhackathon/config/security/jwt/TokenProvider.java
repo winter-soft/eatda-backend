@@ -1,10 +1,14 @@
 package com.proceed.swhackathon.config.security.jwt;
 
+import com.proceed.swhackathon.exception.SwhackathonException;
+import com.proceed.swhackathon.exception.user.UserNotFoundException;
+import com.proceed.swhackathon.exception.user.UserTokenExpiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.proceed.swhackathon.model.User;
 

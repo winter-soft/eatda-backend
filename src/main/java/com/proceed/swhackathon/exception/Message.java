@@ -8,6 +8,13 @@ public class Message {
     public static final String USER_UNAUTHORIZED = "접근권한이 없는 회원입니다.";
     public static final String USER_TOKEN_EXPIRED = "해당유저의 토큰이 만료되었습니다.";
 
+    public static final String JWT_TOKEN_EXPIRED = "JWT 토큰이 만료되었습니다.";
+    public static final String JWT_UNSUPPORTED = "지원하지 않는 JWT 토큰입니다.";
+    public static final String JWT_MALFORMED = "올바른 JWT 토큰의 형태가 아닙니다.";
+    public static final String JWT_SIGNATURE = "올바른 SIGNATURE가 아닙니다.";
+    public static final String JWT_ILLEGAL_ARGUMENT = "잘못된 정보를 넣었습니다.";
+
+
     public static final String STORE_NOT_FOUND = "가게를 찾지 못했습니다.";
     public static final String STORE_DISTANCE = "올바른 값을 입력해주세요. ex) 0.9km";
     public static final String ALREADY_STORE_BOSS_ASSIGN = "해당 사장님으로 등록된 가게가 존재합니다.";

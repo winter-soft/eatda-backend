@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = SwhackathonException.class)
     protected ResponseDTO<ExceptionDTO> swHackathonException(SwhackathonException e){
+        log.info("SwhackathonException Running..");
         return new ResponseDTO<>(e.getHttpStatus().value(), new ExceptionDTO(e.getMessage()));
     }
 
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = ExpiredJwtException.class)
-    protected ResponseDTO<ExceptionDTO> ExpiredJwtException(ExpiredJwtException e){
+    protected ResponseDTO<ExceptionDTO> expiredJwtException(ExpiredJwtException e){
         return new ResponseDTO<>(HttpStatus.UNAUTHORIZED.value(), new ExceptionDTO(Message.USER_TOKEN_EXPIRED));
     }
 }
