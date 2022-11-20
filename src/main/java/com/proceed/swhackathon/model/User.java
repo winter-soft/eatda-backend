@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,9 +25,11 @@ public class User {
     @Column(nullable = false)
     private String username;
 
+    @JsonIgnore
     private String platformType;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String platformId;
 
     @Column(nullable = false)
@@ -35,11 +38,14 @@ public class User {
     private String profileImageUrl;
 
     @Setter
+    @JsonIgnore
     private String token;
 
+    @JsonIgnore
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @JsonIgnore
     private Role role;
 }

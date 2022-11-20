@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -42,8 +44,17 @@ public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
+    @OneToMany(mappedBy = "orderDetail", fetch = FetchType.EAGER)
+    private List<OrderDetailOption> orderDetailOptions = new ArrayList<>();
+
     public void calTotalPrice(){
-        totalPrice = menu.getPrice() * quantity;
+        int totalOptionPrice = 0; // 옵션가격
+        if(orderDetailOptions != null) { // 옵션이 존재할경우
+            for(OrderDetailOption odo : orderDetailOptions){
+                totalOptionPrice += odo.getMenuOption().getOptionPrice();
+            }
+        }
+        totalPrice = (menu.getPrice() + totalOptionPrice) * quantity;
     }
 
     public boolean triggerCheck(){

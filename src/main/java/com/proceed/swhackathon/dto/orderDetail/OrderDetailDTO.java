@@ -1,14 +1,14 @@
 package com.proceed.swhackathon.dto.orderDetail;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.proceed.swhackathon.model.Menu;
-import com.proceed.swhackathon.model.Order;
-import com.proceed.swhackathon.model.OrderDetail;
-import com.proceed.swhackathon.model.User;
+import com.proceed.swhackathon.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -23,6 +23,7 @@ public class OrderDetailDTO {
 //    @JsonIgnore
     private Order order;
     private Menu menu;
+    private List<OrderDetailOption> orderDetailOptions = new ArrayList<>();
 
     public OrderDetail dtoToEntity(){
         return OrderDetail.builder()
@@ -44,6 +45,7 @@ public class OrderDetailDTO {
                 .user(od.getUser())
                 .order(od.getOrder())
                 .menu(od.getMenu())
+                .orderDetailOptions(od.getOrderDetailOptions())
                 .build();
     }
 }

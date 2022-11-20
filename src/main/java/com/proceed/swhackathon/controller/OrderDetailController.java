@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.controller;
 
+import com.proceed.swhackathon.dto.menuOption.MenuOptionDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
@@ -8,10 +9,12 @@ import com.proceed.swhackathon.model.UserOrderDetail;
 import com.proceed.swhackathon.service.OrderDetailService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orderDetail")

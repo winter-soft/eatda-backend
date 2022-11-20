@@ -1,11 +1,13 @@
 package com.proceed.swhackathon.service;
 
+import com.proceed.swhackathon.dto.menuOption.MenuOptionDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailResponseDTO;
 import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
 import com.proceed.swhackathon.exception.menu.MenuNotMatchingStoreException;
+import com.proceed.swhackathon.exception.menuOption.MenuOptionNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderStatusException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,8 +33,10 @@ public class OrderDetailService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
+    private final MenuOptionRepository menuOptionRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final UserOrderDetailRepository userOrderDetailRepository;
+    private final OrderDetailOptionRepository orderDetailOptionRepository;
 
     @Transactional
     public OrderDetailDTO insertOrderDetail(String userId,
@@ -61,11 +66,11 @@ public class OrderDetailService {
         }
 
         /*
-         기존에 동일한 딜에 동일한 메뉴를 추가할때 합쳐주는 로직
+         기존에 동일한 딜에 동일한 메뉴를 추가할때 합쳐주는 로직 (제거)
          */
-        Optional<OrderDetail> orderDetail = orderDetailRepository.findByUserAndOrderAndMenuV2(user, order, menu);
+//        Optional<OrderDetail> orderDetail = orderDetailRepository.findByUserAndOrderAndMenuV2(user, order, menu);
         OrderDetail od;
-        if(orderDetail.isEmpty()) {
+//        if(orderDetail.isEmpty()) {
             od = OrderDetail.builder() // 새로운 객체 생성
                     .quantity(orderDetailDTO.getQuantity())
                     .menuCheck(true)
@@ -73,14 +78,30 @@ public class OrderDetailService {
             od.setUser(user);
             od.setMenu(menu);
             od.setOrder(order);
-        }else{
-            od = orderDetail.get();
-            od.setMenuCheck(true);
-            od.setQuantity(od.getQuantity() + orderDetailDTO.getQuantity());
+//        }else{
+//            od = orderDetail.get();
+//            od.setMenuCheck(true);
+//            od.setQuantity(od.getQuantity() + orderDetailDTO.getQuantity());
+//        }
+
+        List<OrderDetailOption> orderDetailOptions = new ArrayList<>();
+        for(MenuOptionDTO mod : orderDetailDTO.getMenuOptions()){
+            MenuOption menuOption = menuOptionRepository.findById(mod.getMenuOption_id()).orElseThrow(() -> {
+                throw new MenuOptionNotFoundException();
+            });
+
+            OrderDetailOption orderDetailOption = OrderDetailOption.builder()
+                    .menuOption(menuOption)
+                    .orderDetail(od)
+                    .build();
+            orderDetailOptions.add(orderDetailOptionRepository.save(orderDetailOption));
         }
+        od.setOrderDetailOptions(orderDetailOptions); // orderDetailOption 붙여넣기
         od.calTotalPrice(); // price 다시 계산
 
-        return OrderDetailDTO.entityToDTO(orderDetailRepository.save(od));
+        OrderDetail save = orderDetailRepository.save(od);
+
+        return OrderDetailDTO.entityToDTO(save);
     }
 
     public List<OrderDetailDTO> selectCart(String userId) {
