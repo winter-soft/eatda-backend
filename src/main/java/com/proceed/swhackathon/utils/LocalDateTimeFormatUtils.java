@@ -40,9 +40,9 @@ public class LocalDateTimeFormatUtils {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime dealTime = null;
         if(timeIndex == 0) dealTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11,0); // 오늘 점심
-        else if(timeIndex == 1) dealTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 16,30); // 11시
+        else if(timeIndex == 1) dealTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 17,30); // 11시
         else if(timeIndex == 2) dealTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11,0).plusDays(1); // 11시
-        else if(timeIndex == 3) dealTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 16,30).plusDays(1); // 11시
+        else if(timeIndex == 3) dealTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 17,30).plusDays(1); // 11시
 
         return dealTime;
     }

@@ -19,7 +19,8 @@ public class Payment extends TimeZone{
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String payment_id;
 
-    private int userOrderDetail_id; // Item (외래키)
+    private String user_id; // User (외래키)
+    private Long order_id; // Order (외래키)
 
     private String version;
     private String paymentKey;

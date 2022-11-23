@@ -68,7 +68,7 @@ public class UserController {
     @GetMapping("/infor")
     @ApiOperation(value = "유저 정보", notes = "token을 입력받아 유저 정보를 리턴한다.")
     public ResponseDTO<?> userInformation(@AuthenticationPrincipal String userId){
-        return new ResponseDTO<>(HttpStatus.OK.value(), userService.findById(userId));
+        return userService.findById(userId);
     }
 
     @PostMapping("/refresh")

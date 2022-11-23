@@ -86,6 +86,9 @@ public class OrderDetailService {
 
         List<OrderDetailOption> orderDetailOptions = new ArrayList<>();
         for(MenuOptionDTO mod : orderDetailDTO.getMenuOptions()){
+            // menuOption의 id가 0인경우는 아무것도 넣지 않는다.
+            if(mod.getMenuOption_id() == 0) continue;
+
             MenuOption menuOption = menuOptionRepository.findById(mod.getMenuOption_id()).orElseThrow(() -> {
                 throw new MenuOptionNotFoundException();
             });

@@ -21,6 +21,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +47,8 @@ public class PaymentService {
         });
 
         Payment payment = Payment.builder()
-                .userOrderDetail_id(reqDTO.getUserOrderDetail_id())
+                .user_id(user.getId())
+                .order_id(reqDTO.getOrder_id())
                 .orderName(reqDTO.getOrder_name())
                 .totalAmount(reqDTO.getAmount())
                 .status("WAITING")
@@ -64,7 +67,7 @@ public class PaymentService {
     }
 
     @Transactional
-    public ResponseDTO<?> paymentConfirm(final String clientKey,
+    public ResponseDTO<?> paymentConfirm(String clientKey,
                                          final String paymentKey,
                                          final String orderId,
                                          final Integer amount){
@@ -82,6 +85,9 @@ public class PaymentService {
 
         try {
             URL address = new URL("https://api.tosspayments.com/v1/payments/confirm");
+            byte[] bytes = (clientKey + ":").getBytes(StandardCharsets.UTF_8);
+            clientKey = new String(Base64.getEncoder().encode(bytes));
+
             HttpURLConnection connection = (HttpURLConnection) address.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Authorization", "Basic " + clientKey);
@@ -121,6 +127,7 @@ public class PaymentService {
             JSONObject obj = new JSONObject(bufferedReader.readLine());
 
             Map<String, Object> obj_map = obj.toMap();
+            obj_map.put("order_id", payment.getOrder_id());
 
             if(obj_map.containsKey("version"))  payment.setVersion((String)obj_map.get("version"));
             if(obj_map.containsKey("paymentKey"))  payment.setPaymentKey((String) obj_map.get("paymentKey"));
@@ -157,6 +164,9 @@ public class PaymentService {
 
         try {
             final String url = "https://api.tosspayments.com/v1/payments/" + payment.getPaymentKey() + "/cancel";
+            byte[] bytes = (clientKey + ":").getBytes(StandardCharsets.UTF_8);
+            clientKey = new String(Base64.getEncoder().encode(bytes));
+
             URL address = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) address.openConnection();
             connection.setRequestMethod("POST");
@@ -195,6 +205,7 @@ public class PaymentService {
             JSONObject obj = new JSONObject(bufferedReader.readLine());
 
             Map<String, Object> obj_map = obj.toMap();
+            obj_map.put("order_id", payment.getOrder_id());
 
             if(obj_map.containsKey("version"))  payment.setVersion((String)obj_map.get("version"));
             if(obj_map.containsKey("paymentKey"))  payment.setPaymentKey((String) obj_map.get("paymentKey"));
