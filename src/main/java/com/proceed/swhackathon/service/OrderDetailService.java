@@ -11,6 +11,7 @@ import com.proceed.swhackathon.exception.menuOption.MenuOptionNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderStatusException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
+import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
 import com.proceed.swhackathon.exception.userOrderDetail.UserOrderDetailNotFoundException;
 import com.proceed.swhackathon.model.*;
 import com.proceed.swhackathon.repository.*;
@@ -119,20 +120,14 @@ public class OrderDetailService {
     }
 
     @Transactional
-    public String updateMenuCheck(String userId, Long orderId, Long menuId){
-        User user = userRepository.findById(userId).orElseThrow(() -> {
-            throw new UserNotFoundException();
-        });
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> {
-            throw new OrderNotFoundException();
-        });
-        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> {
-            throw new MenuNotFoundException();
-        });
+    public String updateMenuCheck(String userId, Long orderDetailId){
 
-        OrderDetail ods = orderDetailRepository.findByUserAndOrderAndMenu(user, order, menu).orElseThrow(() -> {
+        OrderDetail ods = orderDetailRepository.findById(orderDetailId).orElseThrow(() -> {
             throw new UserOrderDetailNotFoundException();
         });
+
+        if(!ods.getUser().getId().equals(userId)) // 같지 않을경우 에러 출력
+            throw new UserUnAuthorizedException();
 
         if(ods == null) return "메뉴를 찾지 못했습니다.";
         else

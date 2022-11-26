@@ -40,12 +40,11 @@ public class OrderDetailController {
     }
 
     @ApiOperation(value = "메뉴 체크", notes = "true면 false, false면 true로 변경")
-    @PutMapping("/{orderId}/{menuId}")
+    @PutMapping("/{orderDetailId}")
     public ResponseDTO<?> updateCart(@AuthenticationPrincipal String userId,
-                                     @PathVariable Long orderId,
-                                     @PathVariable Long menuId){
+                                     @PathVariable Long orderDetailId){
         return new ResponseDTO<>(HttpStatus.OK.value(),
-                orderDetailService.updateMenuCheck(userId, orderId, menuId));
+                orderDetailService.updateMenuCheck(userId, orderDetailId));
     }
 
     @ApiOperation(value = "주문 넣기", notes = "사용자의 장바구니에 담긴 메뉴를 order에 추가")
