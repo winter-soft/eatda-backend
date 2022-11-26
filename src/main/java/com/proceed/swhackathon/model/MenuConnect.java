@@ -1,6 +1,5 @@
 package com.proceed.swhackathon.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,21 +9,18 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MenuOption {
+public class MenuConnect { // Menu와 MenuOptionTitle을 이어준다.
 
     @Id @GeneratedValue
-    @Column(name = "menuOption_id")
+    @Column(name = "menuConnect_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String optionName;
-
-    @Column(nullable = false)
-    private int optionPrice;
-
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    @ManyToOne
     @JoinColumn(name = "menuOptionTitle_id")
-    @JsonIgnore
     private MenuOptionTitle menuOptionTitle;
 
 }

@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.service;
 
+import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.menu.MenuDTO;
 import com.proceed.swhackathon.dto.menu.MenuInsertDTO;
 import com.proceed.swhackathon.dto.menu.MenuUpdateDTO;
@@ -8,16 +9,17 @@ import com.proceed.swhackathon.exception.IllegalArgumentException;
 import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
 import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
-import com.proceed.swhackathon.model.Menu;
-import com.proceed.swhackathon.model.Store;
-import com.proceed.swhackathon.model.User;
-import com.proceed.swhackathon.repository.MenuRepository;
-import com.proceed.swhackathon.repository.OrderDetailRepository;
-import com.proceed.swhackathon.repository.StoreRepository;
-import com.proceed.swhackathon.repository.UserRepository;
+import com.proceed.swhackathon.model.*;
+import com.proceed.swhackathon.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.proceed.swhackathon.service.UserService.isBoss;
 
@@ -29,13 +31,27 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
+    private final MenuOptionRepository menuOptionRepository;
+    private final MenuConnectRepository menuConnectRepository;
     private final OrderDetailRepository orderDetailRepository;
 
-    public MenuDTO selectMenu(Long menuId){
+    public ResponseDTO<?> selectMenu(Long menuId){
+
+        Map<String, Object> m = new HashMap<>();
+
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> {
             throw new MenuNotFoundException();
         });
-        return MenuDTO.entityToDTO(menu);
+
+        List<MenuOptionTitle> motList = menuConnectRepository.findByMenu(menu);
+        for(MenuOptionTitle mot : motList) {
+            mot.setMenuOptionList(menuOptionRepository.findAllByMenuOptionTitle(mot));
+        }
+
+        m.put("menu", MenuDTO.entityToDTO(menu));
+        m.put("menuOptionTitle", motList);
+
+        return new ResponseDTO<>(HttpStatus.OK.value(), m);
     }
 
     @Transactional
