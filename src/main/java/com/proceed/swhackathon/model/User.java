@@ -1,6 +1,7 @@
 package com.proceed.swhackathon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -48,4 +49,10 @@ public class User extends TimeZone {
     @Column(nullable = false)
     @JsonIgnore
     private Role role;
+
+    // 사장인지 체크
+    public void isBoss(){
+        if(this.role == Role.USER)
+            throw new UserUnAuthorizedException();
+    }
 }

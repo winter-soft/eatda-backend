@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.proceed.swhackathon.service.UserService.isBoss;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -61,7 +59,7 @@ public class MenuService {
         });
 
         // 사장인지 체크
-        isBoss(user);
+        user.isBoss();
 
         Store store = storeRepository.findByUser(userId).orElseThrow(() -> {
             throw new StoreNotFoundException();
@@ -82,7 +80,7 @@ public class MenuService {
         });
 
         // 사장인지 체크
-        isBoss(user);
+        user.isBoss();
 
         Store store = storeRepository.findByUser(userId).orElseThrow(() -> {
             throw new StoreNotFoundException();
@@ -110,7 +108,7 @@ public class MenuService {
         });
 
         // 사장인지 체크
-        isBoss(user);
+        user.isBoss();
 
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> {
             throw new MenuNotFoundException();

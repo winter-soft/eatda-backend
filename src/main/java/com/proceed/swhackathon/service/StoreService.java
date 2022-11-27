@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.proceed.swhackathon.service.UserService.isBoss;
 
 @Slf4j
 @Service
@@ -69,7 +68,7 @@ public class StoreService {
             throw new UserNotFoundException();
         });
 
-        isBoss(user); // 사장인지 체크
+        user.isBoss(); // 사장인지 체크
 
         if(!storeRepository.findByUser(user.getId()).isEmpty()){
             throw new AlreadyStoreBossAssignException();
@@ -106,9 +105,10 @@ public class StoreService {
     @Transactional
     public StoreDTO update(String userId, StoreInsertDTO storeDTO){
         // 사장인지 체크
-        isBoss(userRepository.findById(userId).orElseThrow(() -> {
+        User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
-        }));
+        });
+        user.isBoss();
 
         Store store = storeRepository.findByUser(userId).orElseThrow(() -> {
             throw new StoreNotFoundException();

@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.proceed.swhackathon.service.UserService.isBoss;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +37,10 @@ public class OrderService {
     public OrderDTO insert(String userId, OrderInsertDTO orderDTO, Long storeId){
 
         // 사장인지 체크
-        isBoss(userRepository.findById(userId).orElseThrow(() -> {
+        User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
-        }));
+        });
+        user.isBoss();
 
         Store store = storeRepository.findById(storeId).orElseThrow(() -> {
             throw new StoreNotFoundException();
@@ -107,9 +107,10 @@ public class OrderService {
                                  Long orderId,
                                  OrderStatus orderStatus){
         // 사장인지 체크
-        isBoss(userRepository.findById(userId).orElseThrow(() -> {
+        User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
-        }));
+        });
+        user.isBoss();
 
         Order order = orderRepository.findById(orderId).orElseThrow(() -> {
             throw new OrderNotFoundException();

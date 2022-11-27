@@ -103,11 +103,4 @@ public class UserService {
                 .token(token)
                 .build();
     }
-
-
-    // 사장인지 체크
-    public static void isBoss(User user){
-        if(user.getRole() != Role.BOSS)
-            throw new UserUnAuthorizedException();
-    }
 }
