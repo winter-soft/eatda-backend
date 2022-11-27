@@ -17,13 +17,13 @@ public class TimeZone {
 
     @PrePersist
     public void createTime(){
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().withNano(0);
         this.createdTime = now;
         this.updatedTime = now;
     }
 
     @PreUpdate
     public void updateTime(){
-        this.updatedTime = LocalDateTime.now();
+        this.updatedTime = LocalDateTime.now().withNano(0);
     }
 }

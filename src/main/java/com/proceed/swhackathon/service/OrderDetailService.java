@@ -141,6 +141,19 @@ public class OrderDetailService {
     }
 
     @Transactional
+    public String updateQuantity(String userId, Long orderDetailId, int quantity){
+        OrderDetail ods = orderDetailRepository.findById(orderDetailId).orElseThrow(() -> {
+            throw new UserOrderDetailNotFoundException();
+        });
+
+        if(!ods.getUser().getId().equals(userId)) // 같지 않을경우 에러 출력
+            throw new UserUnAuthorizedException();
+
+        ods.setQuantity(quantity);
+        return "수량을 변경했습니다.";
+    }
+
+    @Transactional
     public Long addOrder(String userId, Long orderId, String paymentId) {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             log.warn("{}", Message.USER_NOT_FOUND);
@@ -277,7 +290,7 @@ public class OrderDetailService {
     public void garbageCollectOrderDetail(){
         List<OrderDetail> ods = orderDetailRepository.deleteAllByMenuCheckIsFalseAndUserOrderDetailIsNull();
         for(OrderDetail od : ods){
-            System.out.println("od.getId() = " + od.getId());
+            log.info("delete OrderDetail ID : {}", od.getId());
         }
     }
 }

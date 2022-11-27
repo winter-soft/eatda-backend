@@ -4,6 +4,7 @@ import com.proceed.swhackathon.dto.menuOption.MenuOptionDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
+import com.proceed.swhackathon.dto.orderDetail.OrderDetailQuantityDTO;
 import com.proceed.swhackathon.model.Order;
 import com.proceed.swhackathon.model.UserOrderDetail;
 import com.proceed.swhackathon.service.OrderDetailService;
@@ -45,6 +46,15 @@ public class OrderDetailController {
                                      @PathVariable Long orderDetailId){
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 orderDetailService.updateMenuCheck(userId, orderDetailId));
+    }
+
+    @ApiOperation(value = "수량 변경", notes = "quantity를 RequestBody로 보내주세요.")
+    @PutMapping("/quantity/{orderDetailId}")
+    public ResponseDTO<?> updateQuantity(@AuthenticationPrincipal String userId,
+                                         @PathVariable Long orderDetailId,
+                                         @RequestBody OrderDetailQuantityDTO quantityDTO){
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                orderDetailService.updateQuantity(userId, orderDetailId, quantityDTO.getQuantity()));
     }
 
     @ApiOperation(value = "주문 넣기", notes = "사용자의 장바구니에 담긴 메뉴를 order에 추가")
