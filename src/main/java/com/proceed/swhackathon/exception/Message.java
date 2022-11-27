@@ -40,4 +40,10 @@ public class Message {
     public static final String PAYMENT_AMOUNT_NOT_MATCH = "결제금액이 올바르지 않습니다.";
 
     public static final String MENU_OPTION_NOT_FOUND = "옵션 값을 찾을 수 없습니다.";
+
+    public static final String COUPON_CODE_INCORRECT = "정확하지 않은 쿠폰코드입니다.";
+    public static final String COUPON_DUPLICATED = "이미 사용한 쿠폰코드입니다.";
+    public static final String COUPON_EXPIRED = "사용기한이 지난 쿠폰코드입니다.";
+
+    public static final String COUPONUSE_NOT_FOUND = "CouponUse를 찾지 못했습니다.";
 }

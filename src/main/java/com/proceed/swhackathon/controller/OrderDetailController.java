@@ -50,10 +50,11 @@ public class OrderDetailController {
     @ApiOperation(value = "주문 넣기", notes = "사용자의 장바구니에 담긴 메뉴를 order에 추가")
     @GetMapping("/userOrder/{orderId}")
     public ResponseDTO<?> addOrder(@AuthenticationPrincipal String userId,
-                                   @PathVariable Long orderId){
+                                   @PathVariable Long orderId,
+                                   @RequestParam(defaultValue = "0") String couponUseId){
         Long uodId = orderDetailService.addOrder(userId, orderId);
         return new ResponseDTO<>(HttpStatus.OK.value(),
-                orderDetailService.detachUOD(userId, orderId, uodId));
+                orderDetailService.detachUOD(userId, orderId, uodId, Long.parseLong(couponUseId)));
     }
 
     @ApiOperation(value = "유저 주문목록 가져오기", notes = "")

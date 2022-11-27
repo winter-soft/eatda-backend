@@ -5,6 +5,8 @@ import com.proceed.swhackathon.dto.orderDetail.OrderDetailDTO;
 import com.proceed.swhackathon.dto.orderDetail.OrderDetailInsertDTO;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailDTO;
 import com.proceed.swhackathon.dto.userOrderDetail.UserOrderDetailResponseDTO;
+import com.proceed.swhackathon.exception.Message;
+import com.proceed.swhackathon.exception.coupon.CouponUseNotFoundException;
 import com.proceed.swhackathon.exception.menu.MenuNotFoundException;
 import com.proceed.swhackathon.exception.menu.MenuNotMatchingStoreException;
 import com.proceed.swhackathon.exception.menuOption.MenuOptionNotFoundException;
@@ -38,6 +40,7 @@ public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
     private final UserOrderDetailRepository userOrderDetailRepository;
     private final OrderDetailOptionRepository orderDetailOptionRepository;
+    private final CouponUseRepository couponUseRepository;
 
     @Transactional
     public OrderDetailDTO insertOrderDetail(String userId,
@@ -137,58 +140,76 @@ public class OrderDetailService {
     @Transactional
     public Long addOrder(String userId, Long orderId) {
         User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("{}", Message.USER_NOT_FOUND);
             throw new UserNotFoundException();
         });
         Order order = orderRepository.findById(orderId).orElseThrow(() -> {
+            log.warn("{}", Message.ORDER_NOT_FOUND);
             throw new OrderNotFoundException();
         });
 
         if(order.getOrderStatus() != OrderStatus.WAITING){
+            log.warn("{}", Message.ORDER_STATUS);
             throw new OrderStatusException();
         }
-        log.info("1");
+        log.info("1. 유저의 OrderDetail을 찾는 단계");
         List<OrderDetail> byUserAndOrder = orderDetailRepository.findByUserAndOrder(user, order);
-        log.info("2");
+        log.info("2. OrderDetail을 못찾았을 경우를 탐색하는 단계");
         if(byUserAndOrder.isEmpty()){
+            log.warn("{}", Message.USER_ORDER_DETAIL_NOT_FOUND);
             throw new UserOrderDetailNotFoundException();
         }
-        log.info("3");
-        UserOrderDetail result = userOrderDetailRepository.findByOrderAndUserWithOrder(order, user).orElse(null);
-        log.info("4");
-        if(result != null){
-            result.cancel();
-            userOrderDetailRepository.delete(result);
-        }
-        log.info("5");
+        log.info("3. uod Building");
+        // 이미 주문했는지 확인하는 로직 삭제 (해당 딜에서 여러번 주문을 추가할 수 있도록 하기 위해)
+//        UserOrderDetail result = userOrderDetailRepository.findByOrderAndUserWithOrder(order, user).orElse(null);
+//        log.info("4");
+//        if(result != null){
+//            result.cancel();
+//            userOrderDetailRepository.delete(result);
+//        }
 
         UserOrderDetail uod = UserOrderDetail.builder()
                 .order(order)
                 .user(user)
                 .build();
-        log.info("6");
+        log.info("4. save단계");
+        UserOrderDetail save = userOrderDetailRepository.save(uod);
 
-        return userOrderDetailRepository.save(uod).getId();
+        return save.getId();
     }
 
     @Transactional
-    public UserOrderDetailDTO detachUOD(String userId, Long orderId, Long uodId){
+    public UserOrderDetailDTO detachUOD(String userId, Long orderId, Long uodId, Long couponUseId){
         User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("{}", Message.USER_NOT_FOUND);
             throw new UserNotFoundException();
         });
         Order order = orderRepository.findOrderByIdWithStore(orderId).orElseThrow(() -> {
+            log.warn("{}", Message.ORDER_NOT_FOUND );
             throw new OrderNotFoundException();
         });
         UserOrderDetail uod = userOrderDetailRepository.findById(uodId).orElseThrow(() -> {
+            log.warn("{}", Message.USER_ORDER_DETAIL_NOT_FOUND );
             throw new UserOrderDetailNotFoundException();
         });
 
+        // CouponUse에 UserOrderDetail 넣기
+        if(couponUseId != 0) {
+            CouponUse couponUse = couponUseRepository.findById(couponUseId).orElseThrow(() -> {
+                log.warn("{}", Message.COUPONUSE_NOT_FOUND);
+                throw new CouponUseNotFoundException();
+            });
+            couponUse.couponUsing(uod); // 쿠폰 적용
+        }
+
+        // 메뉴체크가 true로 되어있어야 가져옴.
         List<OrderDetail> ods = orderDetailRepository.findByUserAndOrder(user, order);
         for (OrderDetail od : ods) {
             od.setUserOrderDetail(uod);
         }
 
         uod.setOrderDetails(ods);
-        uod.calTotalPrice();
+        uod.calTotalPrice(); // 돈 계산
 
         // 최근 주문 오더 수정
         order.getStore().setRecentlyOrder(order);
@@ -201,7 +222,7 @@ public class OrderDetailService {
         return UserOrderDetailDTO.entityToDTO(uod);
     }
 
-    public UserOrderDetailDTO selectUOD(String userId, Long orderId){
+    public List<UserOrderDetailDTO> selectUOD(String userId, Long orderId){
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
@@ -209,15 +230,20 @@ public class OrderDetailService {
             throw new OrderNotFoundException();
         });
 
-        UserOrderDetail uod = userOrderDetailRepository.findByOrderAndUser(order, user).orElseThrow(() -> {
+        List<UserOrderDetailDTO> uodDTO = new ArrayList<>();
+
+        List<UserOrderDetail> uods = userOrderDetailRepository.findAllByOrderAndUser(order, user).orElseThrow(() -> {
             throw new UserOrderDetailNotFoundException();
         });
 
-        List<OrderDetail> ods = orderDetailRepository.selectUOD(uod, user);
+        for(UserOrderDetail uod : uods) {
+            List<OrderDetail> ods = orderDetailRepository.selectUOD(uod, user);
 //        ods.removeIf(od -> !od.isMenuCheck());
-        uod.setOrderDetails(ods);
+            uod.setOrderDetails(ods);
+            uodDTO.add(UserOrderDetailDTO.entityToDTO(uod));
+        }
 
-        return UserOrderDetailDTO.entityToDTO(uod);
+        return uodDTO;
     }
 
     public List<UserOrderDetailResponseDTO> selectUODAll(String userId){

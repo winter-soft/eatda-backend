@@ -2,11 +2,16 @@ package com.proceed.swhackathon.service;
 
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.payment.PaymentReqDTO;
+import com.proceed.swhackathon.exception.Message;
+import com.proceed.swhackathon.exception.coupon.CouponExpiredException;
+import com.proceed.swhackathon.exception.coupon.CouponUseNotFoundException;
 import com.proceed.swhackathon.exception.payment.PaymentAmountNotMachException;
 import com.proceed.swhackathon.exception.payment.PaymentNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
+import com.proceed.swhackathon.model.CouponUse;
 import com.proceed.swhackathon.model.Payment;
 import com.proceed.swhackathon.model.User;
+import com.proceed.swhackathon.repository.CouponUseRepository;
 import com.proceed.swhackathon.repository.PaymentRepository;
 import com.proceed.swhackathon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +37,7 @@ import java.util.Map;
 public class PaymentService {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+    private final CouponUseRepository couponUseRepository;
 
     @Value("${payments.toss.successUrl}")
     private String successUrl;
@@ -43,14 +49,35 @@ public class PaymentService {
     public ResponseDTO<?> paymentValid(final String userId,
                                        final PaymentReqDTO reqDTO){
         User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("{}", Message.USER_NOT_FOUND);
             throw new UserNotFoundException();
         });
+
+        int resultAmount = reqDTO.getAmount();
+
+        if(reqDTO.getCouponUse_id() != 0) {
+            CouponUse couponUse = couponUseRepository.findById(reqDTO.getCouponUse_id()).orElseThrow(() -> {
+                log.warn("{}", Message.COUPONUSE_NOT_FOUND);
+                throw new CouponUseNotFoundException();
+            });
+
+            if (couponUse.getCoupon().couponExpireCheck()) {
+                log.warn("{}", Message.COUPON_EXPIRED);
+                throw new CouponExpiredException();
+            }
+
+            couponUse.setCouponUse(true); // 쿠폰 사용표시
+            resultAmount -= couponUse.getCoupon().getCouponPrice();
+            if(resultAmount < 0) resultAmount = 0;
+            log.info("쿠폰 사용금액 : {}", couponUse.getCoupon().getCouponPrice());
+        }
 
         Payment payment = Payment.builder()
                 .user_id(user.getId())
                 .order_id(reqDTO.getOrder_id())
+                .couponUse_id(reqDTO.getCouponUse_id())
                 .orderName(reqDTO.getOrder_name())
-                .totalAmount(reqDTO.getAmount())
+                .totalAmount(resultAmount)
                 .status("WAITING")
                 .build();
         Payment savePayment = paymentRepository.save(payment);
@@ -128,6 +155,7 @@ public class PaymentService {
 
             Map<String, Object> obj_map = obj.toMap();
             obj_map.put("order_id", payment.getOrder_id());
+            obj_map.put("couponUse_id", payment.getCouponUse_id());
 
             if(obj_map.containsKey("version"))  payment.setVersion((String)obj_map.get("version"));
             if(obj_map.containsKey("paymentKey"))  payment.setPaymentKey((String) obj_map.get("paymentKey"));

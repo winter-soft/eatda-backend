@@ -3,6 +3,7 @@ package com.proceed.swhackathon.controller;
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.payment.PaymentReqDTO;
 import com.proceed.swhackathon.service.PaymentService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +20,9 @@ public class PaymentController {
     private String clientKey;
 
     @PostMapping("/valid")
+    @ApiOperation(value = "", notes = "couponUse_id가 없다면 0을 넘겨주세요.")
     public ResponseDTO<?> paymentValid(@AuthenticationPrincipal String userId,
-                                       @RequestBody PaymentReqDTO reqDTO){
+                                       @RequestBody(required = true) PaymentReqDTO reqDTO){
         return paymentService.paymentValid(userId, reqDTO);
     }
 

@@ -21,6 +21,7 @@ public class Payment extends TimeZone {
 
     private String user_id; // User (외래키)
     private Long order_id; // Order (외래키)
+    private Long couponUse_id; // CouponUse (외래키)
 
     private String version;
     private String paymentKey;

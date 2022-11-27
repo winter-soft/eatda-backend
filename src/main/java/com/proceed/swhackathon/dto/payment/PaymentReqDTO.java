@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentReqDTO {
+    private Long couponUse_id;
     private Long order_id;
     private String order_name;
     private int amount;
