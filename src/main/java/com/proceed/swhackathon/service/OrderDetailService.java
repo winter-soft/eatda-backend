@@ -272,4 +272,12 @@ public class OrderDetailService {
                 .stream().map(UserOrderDetailResponseDTO::entityToDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void garbageCollectOrderDetail(){
+        List<OrderDetail> ods = orderDetailRepository.deleteAllByMenuCheckIsFalseAndUserOrderDetailIsNull();
+        for(OrderDetail od : ods){
+            System.out.println("od.getId() = " + od.getId());
+        }
+    }
 }

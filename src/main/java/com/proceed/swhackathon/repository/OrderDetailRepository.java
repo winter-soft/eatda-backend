@@ -34,4 +34,6 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
 
     @Query("select od from OrderDetail od join fetch od.order odo where od.menuCheck = true and odo <> :order and od.user = :user")
     List<OrderDetail> findAllByMenuCheckIsFalseAndOrder(User user, Order order);
+
+    List<OrderDetail> deleteAllByMenuCheckIsFalseAndUserOrderDetailIsNull();
 }
