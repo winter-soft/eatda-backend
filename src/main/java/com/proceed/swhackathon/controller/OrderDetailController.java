@@ -51,8 +51,9 @@ public class OrderDetailController {
     @GetMapping("/userOrder/{orderId}")
     public ResponseDTO<?> addOrder(@AuthenticationPrincipal String userId,
                                    @PathVariable Long orderId,
-                                   @RequestParam(defaultValue = "0") String couponUseId){
-        Long uodId = orderDetailService.addOrder(userId, orderId);
+                                   @RequestParam(defaultValue = "0") String couponUseId,
+                                   @RequestParam(defaultValue = "0") String paymentId){
+        Long uodId = orderDetailService.addOrder(userId, orderId, paymentId);
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 orderDetailService.detachUOD(userId, orderId, uodId, Long.parseLong(couponUseId)));
     }

@@ -12,6 +12,8 @@ import com.proceed.swhackathon.exception.menu.MenuNotMatchingStoreException;
 import com.proceed.swhackathon.exception.menuOption.MenuOptionNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import com.proceed.swhackathon.exception.order.OrderStatusException;
+import com.proceed.swhackathon.exception.payment.PaymentNotFoundException;
+import com.proceed.swhackathon.exception.payment.PaymentStatusException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
 import com.proceed.swhackathon.exception.userOrderDetail.UserOrderDetailNotFoundException;
@@ -41,6 +43,7 @@ public class OrderDetailService {
     private final UserOrderDetailRepository userOrderDetailRepository;
     private final OrderDetailOptionRepository orderDetailOptionRepository;
     private final CouponUseRepository couponUseRepository;
+    private final PaymentRepository paymentRepository;
 
     @Transactional
     public OrderDetailDTO insertOrderDetail(String userId,
@@ -138,7 +141,7 @@ public class OrderDetailService {
     }
 
     @Transactional
-    public Long addOrder(String userId, Long orderId) {
+    public Long addOrder(String userId, Long orderId, String paymentId) {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             log.warn("{}", Message.USER_NOT_FOUND);
             throw new UserNotFoundException();
@@ -148,10 +151,22 @@ public class OrderDetailService {
             throw new OrderNotFoundException();
         });
 
+        // 주문 위조 방지
+        Payment payment = paymentRepository.findById(paymentId).orElseThrow(() -> {
+            log.warn("{}", "위조된 주문요청입니다.");
+            throw new PaymentNotFoundException();
+        });
+        if(!payment.getStatus().equals("DONE")){
+            log.warn("{}", Message.PAYMENT_STATUS);
+            throw new PaymentStatusException();
+        }
+
         if(order.getOrderStatus() != OrderStatus.WAITING){
             log.warn("{}", Message.ORDER_STATUS);
             throw new OrderStatusException();
         }
+        //
+
         log.info("1. 유저의 OrderDetail을 찾는 단계");
         List<OrderDetail> byUserAndOrder = orderDetailRepository.findByUserAndOrder(user, order);
         log.info("2. OrderDetail을 못찾았을 경우를 탐색하는 단계");
