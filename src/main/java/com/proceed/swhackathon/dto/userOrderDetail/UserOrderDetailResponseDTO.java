@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -21,6 +22,8 @@ public class UserOrderDetailResponseDTO {
     private Store store;
     private Order order;
     private List<OrderDetail> orderDetails;
+    private LocalDateTime createdTime;
+    private LocalDateTime updatedTime;
 
     public static UserOrderDetailResponseDTO entityToDTO(UserOrderDetail uod){
         return UserOrderDetailResponseDTO.builder()
@@ -29,6 +32,8 @@ public class UserOrderDetailResponseDTO {
                 .store(uod.getOrder().getStore())
                 .order(uod.getOrder())
                 .orderDetails(uod.getOrderDetails())
+                .createdTime(uod.getCreatedTime())
+                .updatedTime(uod.getUpdatedTime())
                 .build();
     }
 }

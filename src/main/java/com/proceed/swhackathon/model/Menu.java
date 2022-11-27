@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "store")
-public class Menu {
+public class Menu extends TimeZone {
 
     @Id @GeneratedValue
     @Column(name = "menu_id")

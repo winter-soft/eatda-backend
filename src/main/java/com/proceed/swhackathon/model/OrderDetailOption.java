@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class OrderDetailOption {
+public class OrderDetailOption extends TimeZone {
 
     @Id @GeneratedValue
     @Column(name = "orderDetailOption_id")

@@ -14,11 +14,11 @@ public class SwhackathonApplication {
 		System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
 	}
 
-	@PostConstruct
-	public void started(){
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-		System.out.println("현재시간 : " + new Date());
-	}
+//	@PostConstruct
+//	public void started(){
+//		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+//		System.out.println("현재시간 : " + new Date());
+//	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(SwhackathonApplication.class, args);

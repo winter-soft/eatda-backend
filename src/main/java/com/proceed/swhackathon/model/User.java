@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "USERS", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
-public class User {
+public class User extends TimeZone {
 
     @Id
     @GeneratedValue(generator = "system-uuid")

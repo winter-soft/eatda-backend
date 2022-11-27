@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserOrderDetail {
+public class UserOrderDetail extends TimeZone {
 
     @Id @GeneratedValue
     @Column(name = "userOrderDetail_id")

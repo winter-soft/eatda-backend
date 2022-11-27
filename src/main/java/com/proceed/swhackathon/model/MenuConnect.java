@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MenuConnect { // Menu와 MenuOptionTitle을 이어준다.
+public class MenuConnect extends TimeZone { // Menu와 MenuOptionTitle을 이어준다.
 
     @Id @GeneratedValue
     @Column(name = "menuConnect_id")

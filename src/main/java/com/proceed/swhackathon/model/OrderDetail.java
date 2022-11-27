@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class OrderDetail { // 어떤 유저가 어떤 오더에 어떤 음식을 시켰는지
+public class OrderDetail extends TimeZone { // 어떤 유저가 어떤 오더에 어떤 음식을 시켰는지
 
     @Id @GeneratedValue
     @Column(name = "orderDetail_id")

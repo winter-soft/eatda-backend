@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MenuOptionTitle { // 하나의 메뉴에 종속되지 않는다.
+public class MenuOptionTitle extends TimeZone { // 하나의 메뉴에 종속되지 않는다.
     @Id @GeneratedValue
     @Column(name = "menuOptionTitle_id")
     private Long id;

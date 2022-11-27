@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "ORDERS")
-public class Order {
+public class Order extends TimeZone {
 
     @Id @GeneratedValue
     @Column(name = "order_id")

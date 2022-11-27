@@ -15,7 +15,7 @@ import java.util.List;
 @ToString(exclude = "likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Store {
+public class Store extends TimeZone {
 
     @Id @GeneratedValue
     @Column(name = "store_id")

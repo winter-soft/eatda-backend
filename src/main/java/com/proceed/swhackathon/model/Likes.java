@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Likes {
+public class Likes extends TimeZone{
 
     @Id @GeneratedValue
     @Column(name = "likes_id")

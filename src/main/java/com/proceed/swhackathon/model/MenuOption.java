@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MenuOption {
+public class MenuOption extends TimeZone {
 
     @Id @GeneratedValue
     @Column(name = "menuOption_id")
