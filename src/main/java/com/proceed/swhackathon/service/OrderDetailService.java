@@ -150,6 +150,8 @@ public class OrderDetailService {
             throw new UserUnAuthorizedException();
 
         ods.setQuantity(quantity);
+        ods.calTotalPrice();
+
         return "수량을 변경했습니다.";
     }
 

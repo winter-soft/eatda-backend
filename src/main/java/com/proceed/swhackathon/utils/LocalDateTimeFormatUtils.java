@@ -37,7 +37,7 @@ public class LocalDateTimeFormatUtils {
      * @return (LocalDateTime)
      */
     public static LocalDateTime calcTime(Long timeIndex){
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().withNano(0);
         LocalDateTime dealTime = null;
         if(timeIndex == 0) dealTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11,0); // 오늘 점심
         else if(timeIndex == 1) dealTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 17,30); // 11시
