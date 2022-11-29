@@ -41,3 +41,6 @@ out/
 ### VS Code ###
 .vscode/
 /src/main/java/com/proceed/swhackathon/test/
+
+/src/main/resources/ssl/
+
