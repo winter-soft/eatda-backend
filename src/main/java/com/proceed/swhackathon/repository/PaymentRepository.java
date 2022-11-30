@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface PaymentRepository extends JpaRepository<Payment, String> {
 
     @Query("select p from Payment p where p.userOrderDetail_id = :useOrderDetail_id")
-    Optional<Payment> findByUserOrderDetail_id(Long useOrderDetail_id);
+    Payment findByUserOrderDetail_id(Long useOrderDetail_id);
 }

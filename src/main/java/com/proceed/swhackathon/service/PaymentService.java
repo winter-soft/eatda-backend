@@ -190,10 +190,11 @@ public class PaymentService {
 
     @Transactional
     public ResponseDTO<?> paymentCancel(String clientKey, String userId, Long userOrderDetailId){
-        Payment payment = paymentRepository.findByUserOrderDetail_id(userOrderDetailId).orElseThrow(() -> {
+        Payment payment = paymentRepository.findByUserOrderDetail_id(userOrderDetailId);
+        if(payment == null) {
             log.warn("PaymentNotFoundException occur..");
             throw new PaymentNotFoundException();
-        });
+        }
 
         if(!payment.getUser_id().equals(userId)) {
             log.warn("{}", Message.USER_UNAUTHORIZED);

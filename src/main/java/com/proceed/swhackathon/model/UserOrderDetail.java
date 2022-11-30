@@ -3,6 +3,7 @@ package com.proceed.swhackathon.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.exception.order.OrderNotFoundException;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ public class UserOrderDetail extends TimeZone {
     private Long id;
 
     private int totalPrice;
+
+     // DONE: 결제완료, CANCEL: 결제취소
+    private String userOrderDetailStatus = "DONE";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
