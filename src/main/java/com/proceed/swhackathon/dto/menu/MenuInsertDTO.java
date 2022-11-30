@@ -21,6 +21,7 @@ public class MenuInsertDTO {
                 .name(name)
                 .imageUrl(imageUrl)
                 .price(price)
+                .visible(true)
                 .build();
     }
 }

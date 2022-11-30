@@ -23,6 +23,8 @@ public class MenuDTO {
     private String name;
     private String imageUrl;
     private int price;
+    private boolean visible = true; // 메뉴 보이게할건지 아닌지
+
 
     public static MenuDTO entityToDTO(Menu m){
         return MenuDTO.builder()
@@ -31,6 +33,7 @@ public class MenuDTO {
                 .name(m.getName())
                 .imageUrl(m.getImageUrl())
                 .price(m.getPrice())
+                .visible(true)
                 .build();
     }
 

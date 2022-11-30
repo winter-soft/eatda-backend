@@ -26,6 +26,8 @@ public class Menu extends TimeZone {
     private String imageUrl;
     private int price;
 
+    private boolean visible = true; // 메뉴 보이게할건지 아닌지
+
     public void removeStore(){
         store = null;
     }
