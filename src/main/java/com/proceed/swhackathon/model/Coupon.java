@@ -1,7 +1,10 @@
 package com.proceed.swhackathon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proceed.swhackathon.exception.Message;
+import com.proceed.swhackathon.exception.coupon.CouponOutOfQuantityException;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Builder
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Coupon extends TimeZone {
@@ -34,7 +38,13 @@ public class Coupon extends TimeZone {
     private LocalDateTime endAt; // 만료날짜
 
     public void useCoupon(){
-        this.count -= 1;
+        if(status && this.count > 0) {
+            this.count -= 1; // 1 감소시키고
+            if(this.count == 0) this.status = false; // count가 0이되면, status false로 만들기
+        }else{
+            log.warn("{}", Message.COUPON_OUTOFQUANTITY);
+            throw new CouponOutOfQuantityException();
+        }
     }
 
     // 기한이 지났으면 true, 지나지 않았으면 false

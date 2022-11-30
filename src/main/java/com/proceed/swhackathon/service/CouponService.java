@@ -63,8 +63,8 @@ public class CouponService {
                 .couponUse(false) // 아직 사용하지 않은상태
                 .build();
 
-        couponUseRepository.save(couponUse); // 쿠폰 등록
-        return new ResponseDTO<>(HttpStatus.OK.value(), "쿠폰이 등록되었습니다.");
+        CouponUse save = couponUseRepository.save(couponUse);// 쿠폰 등록
+        return new ResponseDTO<>(HttpStatus.OK.value(), save);
     }
 
     public ResponseDTO<?> selectUserCoupon(String userId){

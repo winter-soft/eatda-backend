@@ -42,9 +42,10 @@ public class Message {
 
     public static final String MENU_OPTION_NOT_FOUND = "옵션 값을 찾을 수 없습니다.";
 
-    public static final String COUPON_CODE_INCORRECT = "정확하지 않은 쿠폰코드입니다.";
-    public static final String COUPON_DUPLICATED = "이미 사용한 쿠폰코드입니다.";
-    public static final String COUPON_EXPIRED = "사용기한이 지난 쿠폰코드입니다.";
+    public static final String COUPON_CODE_INCORRECT = "유효하지 않은 쿠폰 코드입니다.";
+    public static final String COUPON_DUPLICATED = "이미 사용한 쿠폰 코드입니다.";
+    public static final String COUPON_EXPIRED = "사용기한이 지난 쿠폰 코드입니다.";
+    public static final String COUPON_OUTOFQUANTITY = "쿠폰이 모두 소진되었습니다.";
 
     public static final String COUPONUSE_NOT_FOUND = "CouponUse를 찾지 못했습니다.";
 }
