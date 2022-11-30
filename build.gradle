@@ -44,6 +44,8 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
+	implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2' // 엑셀시트 만들기
+
 }
 
 tasks.named('test') {
