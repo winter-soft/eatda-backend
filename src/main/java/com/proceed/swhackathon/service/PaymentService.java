@@ -8,11 +8,15 @@ import com.proceed.swhackathon.exception.coupon.CouponUseNotFoundException;
 import com.proceed.swhackathon.exception.payment.PaymentAmountNotMachException;
 import com.proceed.swhackathon.exception.payment.PaymentNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
+import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
+import com.proceed.swhackathon.exception.userOrderDetail.UserOrderDetailNotFoundException;
 import com.proceed.swhackathon.model.CouponUse;
 import com.proceed.swhackathon.model.Payment;
 import com.proceed.swhackathon.model.User;
+import com.proceed.swhackathon.model.UserOrderDetail;
 import com.proceed.swhackathon.repository.CouponUseRepository;
 import com.proceed.swhackathon.repository.PaymentRepository;
+import com.proceed.swhackathon.repository.UserOrderDetailRepository;
 import com.proceed.swhackathon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +42,7 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final CouponUseRepository couponUseRepository;
+    private final UserOrderDetailRepository userOrderDetailRepository;
 
     @Value("${payments.toss.successUrl}")
     private String successUrl;
@@ -184,11 +189,16 @@ public class PaymentService {
     }
 
     @Transactional
-    public ResponseDTO<?> paymentCancel(String clientKey, String orderId){
-        Payment payment = paymentRepository.findById(orderId).orElseThrow(() -> {
+    public ResponseDTO<?> paymentCancel(String clientKey, String userId, Long userOrderDetailId){
+        Payment payment = paymentRepository.findByUserOrderDetail_id(userOrderDetailId).orElseThrow(() -> {
             log.warn("PaymentNotFoundException occur..");
             throw new PaymentNotFoundException();
         });
+
+        if(!payment.getUser_id().equals(userId)) {
+            log.warn("{}", Message.USER_UNAUTHORIZED);
+            throw new UserUnAuthorizedException();
+        }
 
         try {
             final String url = "https://api.tosspayments.com/v1/payments/" + payment.getPaymentKey() + "/cancel";
@@ -203,7 +213,11 @@ public class PaymentService {
             connection.setDoOutput(true);
 
             // tid 확인
-            String parameter = "{\"cancelReason\":" + " \"고객이 취소를 원함\"" + "}";
+            String parameter = "{\"cancelReason\":" + " \"고객이 취소를 원함\","
+                    + "\"cancelAmount\":" + payment.getTotalAmount()
+                    + "\", \"refundReceiveAccount\":{\"bank\": \"" + payment.getPaymentKey()
+                    + "\", \"accountNumber\": \"" + payment.getPaymentKey()
+                    + "\", \"holderName\": \"" + payment.getPaymentKey() + "\"}}";
             log.info("parameter info {}", parameter);
             OutputStream outputStream = connection.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
@@ -250,6 +264,19 @@ public class PaymentService {
             if(obj_map.containsKey("lastTransactionKey"))  payment.setLastTransactionKey((String)obj_map.get("lastTransactionKey"));
             if(obj_map.containsKey("suppliedAmount"))  payment.setSuppliedAmount((Integer)obj_map.get("suppliedAmount"));
             if(obj_map.containsKey("vat"))  payment.setVat((Integer)obj_map.get("vat"));
+
+            UserOrderDetail uod = userOrderDetailRepository.findByIdWithOrder(userOrderDetailId).orElseThrow(() -> {
+                log.warn("{}", Message.USER_ORDER_DETAIL_NOT_FOUND);
+                throw new UserOrderDetailNotFoundException();
+            });
+
+            if(uod.equals("CANCEL")) { // 이미 취소상태일 경우
+                log.warn("{}", Message.USER_UNAUTHORIZED );
+                throw new UserUnAuthorizedException();
+            }
+
+            uod.cancel(); // 취소하고
+            uod.setUserOrderDetailStatus("CANCEL"); // 상태변경
 
             return new ResponseDTO<>(HttpStatus.OK.value(), payment);
         } catch (MalformedURLException e) {

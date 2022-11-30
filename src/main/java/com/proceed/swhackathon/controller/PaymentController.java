@@ -34,7 +34,8 @@ public class PaymentController {
     }
 
     @GetMapping("/fail")
-    public ResponseDTO<?> paymentCancel(@RequestParam String orderId){
-        return paymentService.paymentCancel(clientKey, orderId);
+    public ResponseDTO<?> paymentCancel(@AuthenticationPrincipal String userId,
+                                        @RequestParam Long userOrderDetailId){
+        return paymentService.paymentCancel(clientKey, userId, userOrderDetailId);
     }
 }
