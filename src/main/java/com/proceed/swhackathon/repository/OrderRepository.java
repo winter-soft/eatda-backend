@@ -33,5 +33,9 @@ public interface  OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "select * from ORDERS o where DATE_FORMAT(o.endTime, '%Y-%m-%d %H:%i') = :dateTime", nativeQuery = true)
     List<Order> findAllByEndTime(String dateTime);
 
+    @Query(value = "select * from ORDERS o where DATE_FORMAT(o.endTime, '%Y-%m-%d') = :dateTime and o.store_id = :storeId", nativeQuery = true)
+    List<Order> findAllByEndTimeAndStore(String dateTime, Long storeId);
 
+    @Query(value = "select * from ORDERS o where DATE_FORMAT(o.endTime, '%Y-%m-%d') = :dateTime", nativeQuery = true)
+    List<Order> findAllByEndTimeAndStore(String dateTime);
 }
