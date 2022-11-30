@@ -213,11 +213,11 @@ public class PaymentService {
             connection.setDoOutput(true);
 
             // tid 확인
-            String parameter = "{\"cancelReason\":" + " \"고객이 취소를 원함\","
-                    + "\"cancelAmount\":" + payment.getTotalAmount()
-                    + "\", \"refundReceiveAccount\":{\"bank\": \"" + payment.getPaymentKey()
-                    + "\", \"accountNumber\": \"" + payment.getPaymentKey()
-                    + "\", \"holderName\": \"" + payment.getPaymentKey() + "\"}}";
+            String parameter = "{\"cancelReason\":" + " \"client wants cancel\"}";
+//                    + "\"cancelAmount\":" + payment.getTotalAmount()
+//                    + "\", \"refundReceiveAccount\":{\"bank\": \"" + payment.getPaymentKey()
+//                    + "\", \"accountNumber\": \"" + payment.getPaymentKey()
+//                    + "\", \"holderName\": \"" + payment.getPaymentKey() + "\"}}";
             log.info("parameter info {}", parameter);
             OutputStream outputStream = connection.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
