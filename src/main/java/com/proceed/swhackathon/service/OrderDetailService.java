@@ -205,6 +205,8 @@ public class OrderDetailService {
         log.info("4. save단계");
         UserOrderDetail save = userOrderDetailRepository.save(uod);
 
+        payment.setUserOrderDetail_id(save.getId()); // payment에 userOrderDetail_id 저장하기.
+
         return save.getId();
     }
 
