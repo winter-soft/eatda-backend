@@ -55,22 +55,32 @@ public class BossService {
 
         int sumPrice = 0;
         int num = 0;
+        String message = "";
         for(UserOrderDetail uod : uods) {
             num++;
+            message += "[주문번호 " + num + "] " + uod.getUser().getUsername() + ": " + uod.getUser().getPhoneNumber() + "\n";
             List<BossUserOrderDetailDTO> buod = new ArrayList<>();
             for(OrderDetail od : uod.getOrderDetails()){
-                buod.add(BossUserOrderDetailDTO.builder()
+                BossUserOrderDetailDTO b = BossUserOrderDetailDTO.builder()
                         .menuName(od.getMenu().getName())
                         .quantity(od.getQuantity())
                         .totalPrice(od.getTotalPrice())
                         .orderDetailOptions(od.getOrderDetailOptions())
-                        .build());
+                        .build();
+                message += b.getMenuName();
+                message += " " + b.getQuantity() + "개 " + b.getTotalPrice() + "\n";
+                for(OrderDetailOption odp : b.getOrderDetailOptions()) {
+                    message += " -" + odp.getMenuOption().getOptionName() + "\n";
+                }
+                buod.add(b);
             }
+            message += "\n";
             sumPrice += uod.getTotalPrice();
             m.put(String.valueOf(num), buod);
         }
 
         m.put("sumPrice", sumPrice);
+        m.put("message", message);
 
        return new ResponseDTO<>(HttpStatus.OK.value(), m);
     }
