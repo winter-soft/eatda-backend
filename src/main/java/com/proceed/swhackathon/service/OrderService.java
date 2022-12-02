@@ -8,10 +8,7 @@ import com.proceed.swhackathon.exception.store.StoreNotFoundException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.exception.user.UserUnAuthorizedException;
 import com.proceed.swhackathon.model.*;
-import com.proceed.swhackathon.repository.DestinationRepository;
-import com.proceed.swhackathon.repository.OrderRepository;
-import com.proceed.swhackathon.repository.StoreRepository;
-import com.proceed.swhackathon.repository.UserRepository;
+import com.proceed.swhackathon.repository.*;
 import com.proceed.swhackathon.utils.LocalDateTimeFormatUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +30,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
     private final DestinationRepository destinationRepository;
+    private final UserOrderDetailRepository userOrderDetailRepository;
 
     @Transactional
     public OrderDTO insert(String userId, OrderInsertDTO orderDTO, Long storeId){
@@ -53,7 +52,7 @@ public class OrderService {
         }));
         order.setStore(store);
         store.setRecentlyOrder(order);
-        return OrderDTO.entityToDTO(orderRepository.save(order));
+        return OrderDTO.entityToDTO(orderRepository.save(order),null);
     }
 
     @Transactional
@@ -62,19 +61,31 @@ public class OrderService {
             throw new OrderNotFoundException();
         });
         order.updateCurrentAmount();
-        return OrderDTO.entityToDTO(order);
+        List<User> users = userOrderDetailRepository.findAllByOrder(order);
+        return OrderDTO.entityToDTO(order, users);
     }
 
-    public Page<OrderDTO> selectAll(Pageable pageable){
-        return orderRepository.findAll(pageable).map(OrderDTO::entityToDTO);
+    public List<OrderDTO> selectAll(Pageable pageable){
+        List<OrderDTO> orderDTOS = new ArrayList<>();
+        List<Order> orders = orderRepository.findAll(pageable).getContent();
+        for(Order order : orders) {
+            List<User> users = userOrderDetailRepository.findAllByOrder(order);
+            orderDTOS.add(OrderDTO.entityToDTO(order, users));
+        }
+        return orderDTOS;
     }
 
     public List<OrderDTO> selectOrderByTimeIndex(Long timeIndex){
         LocalDateTime dealTime = LocalDateTimeFormatUtils.calcTime(timeIndex);
         String fmt_dealTime = LocalDateTimeFormatUtils.dateHour(dealTime);
 
+        List<OrderDTO> orderDTOS = new ArrayList<>();
         List<Order> orders = orderRepository.findAllByEndTime(fmt_dealTime);
-        return orders.stream().map(OrderDTO::entityToDTO).collect(Collectors.toList());
+        for(Order order : orders) {
+            List<User> users = userOrderDetailRepository.findAllByOrder(order);
+            orderDTOS.add(OrderDTO.entityToDTO(order, users));
+        }
+        return orderDTOS;
     }
 
     public List<OrderDTO> selectOrderByDestinationAndTimeIndex(Long destinationId, Long timeIndex){
@@ -87,19 +98,33 @@ public class OrderService {
         LocalDateTime dealTime = LocalDateTimeFormatUtils.calcTime(timeIndex);
         String fmt_dealTime = LocalDateTimeFormatUtils.dateHour(dealTime);
 
+        List<OrderDTO> orderDTOS = new ArrayList<>();
         List<Order> orders = orderRepository.findAllByDestinationAndEndTime(destinationId, fmt_dealTime);
-        return orders.stream().map(OrderDTO::entityToDTO).collect(Collectors.toList());
+        for(Order order : orders) {
+            List<User> users = userOrderDetailRepository.findAllByOrder(order);
+            orderDTOS.add(OrderDTO.entityToDTO(order, users));
+        }
+        return orderDTOS;
     }
 
-    public Page<OrderDTO> selectAllOrderByOrderStatus(Pageable pageable, OrderStatus orderStatus){
-        return orderRepository.findAllByOrderStatus(pageable, orderStatus).map(OrderDTO::entityToDTO);
+    public List<OrderDTO> selectAllOrderByOrderStatus(Pageable pageable, OrderStatus orderStatus){
+        List<OrderDTO> orderDTOS = new ArrayList<>();
+        List<Order> orders = orderRepository.findAllByOrderStatus(pageable, orderStatus).getContent();
+        for(Order order : orders) {
+            List<User> users = userOrderDetailRepository.findAllByOrder(order);
+            orderDTOS.add(OrderDTO.entityToDTO(order, users));
+        }
+        return orderDTOS;
     }
 
     public List<OrderDTO> selectRank(){
-        return orderRepository.findByOrderStatusWithStoreOrderByCurrentAmountDesc(OrderStatus.WAITING)
-                .stream().map(OrderDTO::entityToDTO)
-                .collect(Collectors.toList());
-
+        List<OrderDTO> orderDTOS = new ArrayList<>();
+        List<Order> orders = orderRepository.findByOrderStatusWithStoreOrderByCurrentAmountDesc(OrderStatus.WAITING);
+        for(Order order : orders) {
+            List<User> users = userOrderDetailRepository.findAllByOrder(order);
+            orderDTOS.add(OrderDTO.entityToDTO(order, users));
+        }
+        return orderDTOS;
     }
 
     @Transactional
@@ -118,9 +143,10 @@ public class OrderService {
 
         // 주문상태 변경
         order.setOrderStatus(orderStatus);
+        List<User> users = userOrderDetailRepository.findAllByOrder(order);
 
         // Order -> OrderDTO
-        return OrderDTO.entityToDTO(order);
+        return OrderDTO.entityToDTO(order, users);
     }
 
 

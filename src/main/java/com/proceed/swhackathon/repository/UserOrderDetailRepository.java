@@ -30,4 +30,7 @@ public interface UserOrderDetailRepository extends JpaRepository<UserOrderDetail
 
     @Query("select uod from UserOrderDetail uod join fetch uod.order o where uod.user = :user ORDER BY uod.id DESC")
     List<UserOrderDetail> findAllByUserWithOrderOrderByIdDesc(User user);
+
+    @Query("select uod.user from UserOrderDetail uod where uod.order = :order")
+    List<User> findAllByOrder(Order order);
 }

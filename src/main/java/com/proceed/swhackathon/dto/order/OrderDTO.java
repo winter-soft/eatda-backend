@@ -2,16 +2,14 @@ package com.proceed.swhackathon.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.dto.store.StoreInOrderDTO;
-import com.proceed.swhackathon.model.Destination;
-import com.proceed.swhackathon.model.Order;
-import com.proceed.swhackathon.model.OrderStatus;
-import com.proceed.swhackathon.model.Store;
+import com.proceed.swhackathon.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,8 +24,9 @@ public class OrderDTO {
 //    @JsonIgnore
     private StoreInOrderDTO store;
     private Destination destination;
+    private List<User> users;
 
-    public static OrderDTO entityToDTO(Order o){
+    public static OrderDTO entityToDTO(Order o, List<User> users){
         return OrderDTO.builder()
                 .id(o.getId())
                 .orderStatus(o.getOrderStatus())
@@ -36,6 +35,7 @@ public class OrderDTO {
                 .endTime(o.getEndTime())
                 .store(StoreInOrderDTO.entityToDTO(o.getStore()))
                 .destination(o.getDestination())
+                .users(users)
                 .build();
     }
 }
