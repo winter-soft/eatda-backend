@@ -71,9 +71,8 @@ public class PaymentService {
                 throw new CouponExpiredException();
             }
 
-            couponUse.setCouponUse(true); // 쿠폰 사용표시
             resultAmount -= couponUse.getCoupon().getCouponPrice();
-            if(resultAmount < 0) resultAmount = 0;
+            if(resultAmount <= 0) resultAmount = 1;
             log.info("쿠폰 사용금액 : {}", couponUse.getCoupon().getCouponPrice());
         }
 
@@ -114,6 +113,12 @@ public class PaymentService {
             log.warn("PaymentAmountNotMachException occur..");
             throw new PaymentAmountNotMachException();
         }
+
+        CouponUse couponUse = couponUseRepository.findById(payment.getCouponUse_id()).orElseThrow(() -> {
+            log.warn("{}", Message.COUPONUSE_NOT_FOUND);
+            throw new CouponUseNotFoundException();
+        });
+        couponUse.setCouponUse(true); // 쿠폰 사용표시
 
         try {
             URL address = new URL("https://api.tosspayments.com/v1/payments/confirm");
@@ -190,11 +195,10 @@ public class PaymentService {
 
     @Transactional
     public ResponseDTO<?> paymentCancel(String clientKey, String userId, Long userOrderDetailId){
-        Payment payment = paymentRepository.findByUserOrderDetail_id(userOrderDetailId);
-        if(payment == null) {
+        Payment payment = paymentRepository.findByUserOrderDetail_id(userOrderDetailId).orElseThrow(() -> {
             log.warn("PaymentNotFoundException occur..");
             throw new PaymentNotFoundException();
-        }
+        });
 
         if(!payment.getUser_id().equals(userId)) {
             log.warn("{}", Message.USER_UNAUTHORIZED);

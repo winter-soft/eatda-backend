@@ -272,16 +272,15 @@ public class OrderDetailService {
             List<OrderDetail> ods = orderDetailRepository.selectUOD(uod, user);
 //        ods.removeIf(od -> !od.isMenuCheck());
             uod.setOrderDetails(ods);
-            Payment payment = paymentRepository.findByUserOrderDetail_id(uod.getId());
-            if(payment != null){
-                CouponUse couponUse = couponUseRepository.findById(payment.getCouponUse_id()).orElseThrow(() -> {
-                    log.warn("{}", Message.COUPONUSE_NOT_FOUND);
-                    throw new CouponUseNotFoundException();
-                });
+            Payment payment = paymentRepository.findByUserOrderDetail_id(uod.getId()). orElseThrow(() -> {
+                log.warn("{}", Message.PAYMENT_NOT_FOUND );
+                throw new PaymentNotFoundException();
+            });
+            CouponUse couponUse = couponUseRepository.findByCouponUseId(payment.getCouponUse_id());
+            if(couponUse != null)
                 uodDTO.add(UserOrderDetailDTO.entityToDTO(uod, couponUse.getCoupon()));
-            }else{
+            else
                 uodDTO.add(UserOrderDetailDTO.entityToDTO(uod));
-            }
         }
 
         return uodDTO;
