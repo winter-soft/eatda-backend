@@ -56,10 +56,10 @@ public class UserService {
 
         Map<String, Object> m = new HashMap<>();
 
-        m.put("user_id", user.getId());
+//        m.put("user_id", user.getId());
         m.put("username", user.getUsername());
-        m.put("platformId", user.getPlatformId());
-        m.put("platformType", user.getPlatformType());
+//        m.put("platformId", user.getPlatformId());
+//        m.put("platformType", user.getPlatformType());
         m.put("email", user.getEmail());
         m.put("role", user.getRole());
         m.put("phoneNumber", user.getPhoneNumber());
