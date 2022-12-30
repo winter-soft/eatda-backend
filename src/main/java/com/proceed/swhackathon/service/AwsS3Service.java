@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.proceed.swhackathon.exception.s3.EmptyFileException;
 import com.proceed.swhackathon.exception.s3.FileUploadFailedException;
+import com.proceed.swhackathon.exception.s3.MalformedFileException;
 import com.proceed.swhackathon.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class AwsS3Service {
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch(IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+            throw new FileUploadFailedException();
         }
 
         return url + fileName;
@@ -66,7 +67,7 @@ public class AwsS3Service {
         try {
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
+            throw new MalformedFileException("잘못된 형식의 파일(" + fileName + ") 입니다.");
         }
     }
 }
