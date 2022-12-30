@@ -13,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
+
 @RestController
 @RequestMapping("/menu")
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class MenuController {
     public ResponseDTO<?> insertMenu(@AuthenticationPrincipal String userId,
                                      MenuInsertDTO menuDTO,
                                      @RequestPart("file") MultipartFile multipartFile){
-        String imgPath = s3Service.upload(multipartFile);
+        String imgPath = s3Service.uploadImage(multipartFile);
         menuDTO.setImageUrl(imgPath);
         return new ResponseDTO<>(HttpStatus.OK.value(), menuService.addMenu(userId, menuDTO));
     }

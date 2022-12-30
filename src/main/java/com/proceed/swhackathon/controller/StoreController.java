@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -47,7 +48,7 @@ public class StoreController {
     public ResponseDTO<?> insert(@AuthenticationPrincipal String userId,
                                  StoreInsertDTO storeDTO,
                                  @RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
-        String imgPath = s3Service.upload(multipartFile);
+        String imgPath = s3Service.uploadImage(multipartFile);
         log.info("Store insert imgSource : {}", imgPath);
         storeDTO.setBackgroundImageUrl(imgPath);
 
