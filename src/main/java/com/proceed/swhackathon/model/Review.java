@@ -31,8 +31,7 @@ public class Review extends TimeZone {
     @Column(nullable = false)
     private String content; // 리뷰내용
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
     @CreatedBy
-    private String createdBy;
+    @Column(nullable = false)
+    private String createdBy; // 작성자
 }
