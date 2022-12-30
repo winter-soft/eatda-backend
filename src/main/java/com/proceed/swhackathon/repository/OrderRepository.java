@@ -6,6 +6,7 @@ import com.proceed.swhackathon.model.OrderStatus;
 import com.proceed.swhackathon.model.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -38,4 +39,8 @@ public interface  OrderRepository extends JpaRepository<Order, Long> {
 
     @Query(value = "select * from ORDERS o where DATE_FORMAT(o.endTime, '%Y-%m-%d') = :dateTime", nativeQuery = true)
     List<Order> findAllByEndTimeAndStore(String dateTime);
+
+//    @EntityGraph(attributePaths = {"store", "destination"})
+//    @Query("select o from Order o where o.id = :id")
+//    Order findTestById(Long id);
 }

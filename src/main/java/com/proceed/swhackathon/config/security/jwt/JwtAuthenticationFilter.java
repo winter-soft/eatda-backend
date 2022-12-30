@@ -1,13 +1,9 @@
 package com.proceed.swhackathon.config.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.oauth2.sdk.ErrorObject;
-import com.proceed.swhackathon.dto.ExceptionDTO;
 import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.exception.Message;
-import com.proceed.swhackathon.exception.SwhackathonException;
-import com.proceed.swhackathon.exception.user.UserNotFoundException;
-import com.proceed.swhackathon.exception.user.UserTokenExpiredException;
+import com.proceed.swhackathon.model.Role;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -27,10 +24,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Slf4j
@@ -52,6 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // userId 가져오기. 위조된 경우 예외 처리된다.
                 Claims claims = tokenProvider.validateAndGetUserId(token);
                 String userId = claims.getSubject();
+                String userRole = (String)claims.get("ROLE");
                 Date expiration = claims.getExpiration();
                 log.info("Authenticated user ID : "+userId);
                 log.info("Authenticated expiration : "+expiration);
@@ -60,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userId, // 인증된 사용자의 정보. 문자열이 아니어도 아무것이나 넣을 수 있다. 보통 UserDetails 오브젝트를 넣음
                         null,
-                        AuthorityUtils.NO_AUTHORITIES);
+                        AuthorityUtils.createAuthorityList(userRole));
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 // 비어있는 SecurityContext 생성
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();

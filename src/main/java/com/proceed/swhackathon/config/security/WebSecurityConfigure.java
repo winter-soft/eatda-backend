@@ -40,11 +40,7 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
                     .antMatchers("/**").permitAll()
                     .anyRequest() // "/" , "/auth/**" 이외의 모든 경로는 인증 해야함
                     .authenticated();
-//                .and()
-//                    .oauth2Login()
-//                    .loginPage("/naver") //구글로그인 완료후 후처리가 필요함 엑세스토큰 + 사용자프로필정보
-//                    .userInfoEndpoint()
-//                    .userService(principalOauth2UserService);
+
         // filter 등록
         // 매 요청마다
         // CorsFilter 실행한 후에

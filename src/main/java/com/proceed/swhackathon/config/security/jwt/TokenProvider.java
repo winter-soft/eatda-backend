@@ -3,6 +3,7 @@ package com.proceed.swhackathon.config.security.jwt;
 import com.proceed.swhackathon.exception.SwhackathonException;
 import com.proceed.swhackathon.exception.user.UserNotFoundException;
 import com.proceed.swhackathon.exception.user.UserTokenExpiredException;
+import com.proceed.swhackathon.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -47,7 +48,8 @@ public class TokenProvider {
                 .signWith(SignatureAlgorithm.HS256,SECRET_KEY)
                 // payload에 들어갈 내용
                 .setSubject(user.getId()) // sub
-                .setIssuer("demo app") // iss
+                .claim("ROLE", user.getRole().name())
+                .setIssuer("eat-da") // iss
                 .setIssuedAt(new Date()) // iat
                 .setExpiration(expiryDate) // exp
                 .compact();
