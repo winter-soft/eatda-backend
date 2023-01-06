@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.Temporal
 
-class DateDistance() {
+class DateDistanceKt() {
     companion object {
         val SECONDS: Long = 1
         val MINUTES: Long = 60*SECONDS
