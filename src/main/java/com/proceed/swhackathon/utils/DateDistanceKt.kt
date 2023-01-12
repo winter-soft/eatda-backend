@@ -19,7 +19,7 @@ class DateDistanceKt() {
         /**
          * 현재 날짜로 부터 얼마나 시간이 지났는 지 나타냄.
          */
-        fun of(target: Temporal): String {
+        @JvmStatic fun of(target: Temporal): String {
             val targetDate: LocalDateTime = when (target) {
                 is LocalDateTime -> target
                 is Timestamp -> target.toLocalDateTime()
