@@ -1,17 +1,19 @@
 package com.proceed.swhackathon.model;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
+@ToString(of = {"imageUrl, star, content"})
 public class Review extends TimeZone {
 
     @Id @GeneratedValue
@@ -31,7 +33,10 @@ public class Review extends TimeZone {
     @Column(nullable = false)
     private String content; // 리뷰내용
 
-    @CreatedBy
     @Column(nullable = false)
+    private boolean visible = false;
+
+    @CreatedBy
+    @Column(nullable = true)
     private String createdBy; // 작성자
 }
