@@ -12,7 +12,6 @@ plugins {
 
 	//querydsl 추가
 	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
-	id 'org.jetbrains.kotlin.jvm' version '1.8.0'
 }
 
 group = 'proceed'
@@ -58,13 +57,14 @@ dependencies {
 
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+	implementation "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
 
 bootJar {
 	mainClass = 'com.proceed.swhackathon.SwhackathonApplication'
@@ -88,14 +88,4 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 	querydsl.extendsFrom compileClasspath
-}
-compileKotlin {
-	kotlinOptions {
-		jvmTarget = "1.8"
-	}
-}
-compileTestKotlin {
-	kotlinOptions {
-		jvmTarget = "1.8"
-	}
 }
