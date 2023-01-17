@@ -5,6 +5,7 @@ import com.proceed.swhackathon.model.User;
 import com.proceed.swhackathon.model.UserOrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,4 +34,7 @@ public interface UserOrderDetailRepository extends JpaRepository<UserOrderDetail
 
     @Query("select uod.user from UserOrderDetail uod where uod.order = :order")
     List<User> findAllByOrder(Order order);
+
+    @Query("select uod from UserOrderDetail uod join fetch uod.user u where uod.id = :uodId and u.id = :userId")
+    Optional<UserOrderDetail> findUODByIdAndUser(@Param("uodId")Long uodId, @Param("userId")String userId);
 }

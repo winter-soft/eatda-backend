@@ -22,7 +22,7 @@ public class UserOrderDetail extends TimeZone {
 
     private int totalPrice;
 
-     // DONE: 결제완료, CANCEL: 결제취소
+     // DONE: 결제완료(리뷰는 작성하지 않은 상태), CANCEL: 결제취소, REVIEW_DONE: 리뷰까지 완료
     private String userOrderDetailStatus = "DONE";
 
     @ManyToOne(fetch = FetchType.LAZY)

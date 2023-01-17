@@ -1,8 +1,10 @@
 package com.proceed.swhackathon.controller;
 
 import com.proceed.swhackathon.dto.ResponseDTO;
+import com.proceed.swhackathon.dto.review.ReviewRequestDTO;
 import com.proceed.swhackathon.model.Review;
 import com.proceed.swhackathon.repository.ReviewRepository;
+import com.proceed.swhackathon.service.AwsS3Service;
 import com.proceed.swhackathon.service.ReviewService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -30,5 +33,15 @@ public class ReviewController {
 
         return new ResponseDTO<>(HttpStatus.OK.value(),
                 reviewService.findByStoreId(storeId, page));
+    }
+
+    @ApiOperation(value = "DTO를 받아 리뷰를 생성해주는 API",
+            notes = "POST로 리뷰 작성 정보를 보내면 데이터베이스에 저장합니다.")
+    @PostMapping("/{userOrderDetailId}")
+    public ResponseDTO<?> insertReview(@ApiParam(name = "userOrderDetailId", value = "유저의 주문 정보를 PathVariable로 넘겨주세요.") @PathVariable Long userOrderDetailId,
+                                       @ApiParam(name = "ReviewRequestDTO", value = "star, content, MultiParFile을 form-data로 넘겨주세요.") @ModelAttribute ReviewRequestDTO requestDTO,
+                                       @AuthenticationPrincipal String userId) {
+        reviewService.insertReview(userOrderDetailId, userId, requestDTO);
+        return new ResponseDTO<>(HttpStatus.OK.value(), "OK");
     }
 }
