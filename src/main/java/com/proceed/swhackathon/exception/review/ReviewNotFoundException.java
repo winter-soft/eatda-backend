@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 
 public class ReviewNotFoundException extends SwhackathonException {
     public ReviewNotFoundException() {
-        super(HttpStatus.NOT_FOUND, Message.USER_NOT_FOUND);
+        super(HttpStatus.NOT_FOUND, Message.REVIEW_NOT_FOUND);
     }
 }

@@ -38,10 +38,19 @@ public class ReviewController {
     @ApiOperation(value = "DTO를 받아 리뷰를 생성해주는 API",
             notes = "POST로 리뷰 작성 정보를 보내면 데이터베이스에 저장합니다.")
     @PostMapping("/{userOrderDetailId}")
-    public ResponseDTO<?> insertReview(@ApiParam(name = "userOrderDetailId", value = "유저의 주문 정보를 PathVariable로 넘겨주세요.") @PathVariable Long userOrderDetailId,
+    public ResponseDTO<?> insertReview(@ApiParam(name = "userOrderDetailId", value = "유저의 주문 정보를 PathVariable로 넘겨주세요.", example = "1") @PathVariable Long userOrderDetailId,
                                        @ApiParam(name = "ReviewRequestDTO", value = "star, content, MultiParFile을 form-data로 넘겨주세요.") @ModelAttribute ReviewRequestDTO requestDTO,
                                        @AuthenticationPrincipal String userId) {
         reviewService.insertReview(userOrderDetailId, userId, requestDTO);
+        return new ResponseDTO<>(HttpStatus.OK.value(), "OK");
+    }
+
+    @ApiOperation(value = "reviewId를 받아 리뷰를 삭제해주는 API",
+            notes = "visible을 false로 만듭니다. 자신의 리뷰만 삭제할 수 있다.")
+    @DeleteMapping("/{reviewId}")
+    public ResponseDTO<?> deleteReview(@ApiParam(name = "reviewId", value = "PathVariable로 넘겨주세요.") @PathVariable Long reviewId,
+                                       @AuthenticationPrincipal String userId) {
+        reviewService.deleteReview(reviewId, userId);
         return new ResponseDTO<>(HttpStatus.OK.value(), "OK");
     }
 }

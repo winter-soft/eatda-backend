@@ -11,11 +11,12 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.proceed.swhackathon.model.QMenu.menu;
 import static com.proceed.swhackathon.model.QOrder.order;
 import static com.proceed.swhackathon.model.QOrderDetail.orderDetail;
-import static com.proceed.swhackathon.model.QReview.*;
+import static com.proceed.swhackathon.model.QReview.review;
 import static com.proceed.swhackathon.model.QUser.user;
 import static com.proceed.swhackathon.model.QUserOrderDetail.userOrderDetail;
 import static com.querydsl.core.group.GroupBy.groupBy;
@@ -65,7 +66,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .join(orderDetail.menu, menu)
                 .join(userOrderDetail.order, order)
                 .where(order.store.id.eq(storeId)
-                        .and(review.visible.eq(false)))
+                        .and(review.visible.eq(true)))
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .orderBy(review.id.desc())
@@ -90,5 +91,28 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                                 )
                         )
                 );
+    }
+
+    /**
+     * 1. reviewId를 통해 리뷰 가져오기
+     * 2. userId를 통한 해당 유저의 리뷰가 맞는지 검증
+     * 3. visible이 true인지 검증
+     * 4. 예외 처리를 위해 Optional로 감싸기
+     *
+     * @param reviewId
+     * @param userId
+     * @return
+     */
+    @Override
+    public Optional<Review> validReviewWriter(Long reviewId, String userId) {
+        Review result = queryFactory
+                .selectFrom(review)
+                .where(
+                        review.id.eq(reviewId)
+                                .and(review.createdBy.eq(userId))
+                                .and(review.visible.eq(true)))
+                .fetchOne();
+
+        return Optional.ofNullable(result); // Optional 객체로 변환 시켜서 리턴
     }
 }

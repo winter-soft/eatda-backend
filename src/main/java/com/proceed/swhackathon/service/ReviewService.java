@@ -73,6 +73,17 @@ public class ReviewService {
         uod.setUserOrderDetailStatus("REVIEW_DONE");
     }
 
+    // reviewId를 통해 review의 visible 컬럼을 false로 만듬으로써 삭제 기능을 대신한다.
+    @Transactional
+    public void deleteReview(Long reviewId, String userId) {
+        // 해당 유저의 리뷰인지 검증한다.
+        Review review = reviewRepository.validReviewWriter(reviewId, userId).orElseThrow(() -> {
+            throw new ReviewNotFoundException();
+        });
+
+        review.setVisible(false); // 리뷰 숨김처리
+    }
+
     // 리뷰 평균 계산 크론탭
 //    @Scheduled(cron = "0 0 0/1 * * *") // 매 시간마다 실행
 //    public void reviewGradeUpdate() {
