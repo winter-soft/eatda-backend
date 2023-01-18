@@ -12,4 +12,5 @@ public interface ReviewRepositoryCustom {
     public List<Double> reviewAvg();
     public List<ReviewResponseDTO> findByStoreId(Long storeId, PageRequest pageRequest);
     public Optional<Review> validReviewWriter(Long reviewId, String userId);
+    public List<ReviewResponseDTO> findReviewById(Long reviewId);
 }

@@ -1,5 +1,6 @@
 package com.proceed.swhackathon.repository;
 
+import com.proceed.swhackathon.dto.ResponseDTO;
 import com.proceed.swhackathon.dto.menu.MenuNameDTO;
 import com.proceed.swhackathon.dto.review.ReviewResponseDTO;
 import com.proceed.swhackathon.model.QReview;
@@ -114,5 +115,46 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .fetchOne();
 
         return Optional.ofNullable(result); // Optional 객체로 변환 시켜서 리턴
+    }
+
+    /**
+     * 1. reviewId를 받아서 리뷰를 한 건 조회한다.
+     *
+     * @param reviewId
+     * @return
+     */
+    @Override
+    public List<ReviewResponseDTO> findReviewById(Long reviewId) {
+
+        return queryFactory
+                .from(review)
+                .join(review.userOrderDetail, userOrderDetail)
+                .join(userOrderDetail.orderDetails, orderDetail)
+                .join(orderDetail.menu, menu)
+                .join(user).on(review.createdBy.eq(user.id))
+                .where(
+                        review.id.eq(reviewId)
+                        .and(review.visible.eq(true)))
+                .transform(
+                        groupBy(review.id).list(
+                                Projections.fields(
+                                        ReviewResponseDTO.class,
+                                        review.id,
+                                        review.imageUrl,
+                                        review.star,
+                                        review.content,
+                                        user.username.as("createdBy"),
+                                        list(
+                                                Projections.fields(
+                                                        MenuNameDTO.class,
+                                                        menu.id,
+                                                        menu.name
+                                                )
+                                        ).as("menuName"),
+                                        review.createdTime.as("orderDate"),
+                                        review.visible
+                                )
+                        )
+                );
     }
 }

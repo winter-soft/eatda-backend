@@ -35,14 +35,8 @@ public class ReviewService {
     // storeId를 통해 리뷰를 조회
     public List<ReviewResponseDTO> findByStoreId(Long storeId, int page) {
         PageRequest pageRequest = PageRequest.of(page, 5);
-        return reviewRepository.findByStoreId(storeId, pageRequest)
-                .stream()
-                .map((x) -> {
-                    x.setRelativeDate(DateDistance.of(x.getOrderDate())); // 상대적인 날짜 계산
-                    x.setCreatedBy(UserNickName.of(x.getCreatedBy())); // 닉네임으로 변경
 
-                    return x;
-                }).collect(Collectors.toList());
+        return ReviewResponseDTO.of(reviewRepository.findByStoreId(storeId, pageRequest));
     }
 
     // reviewRequestDTO를 통해 Review 생성
@@ -84,6 +78,17 @@ public class ReviewService {
         review.setVisible(false); // 리뷰 숨김처리
     }
 
+    // 리뷰 한 건 조회하기
+    public ReviewResponseDTO findByReviewId(Long reviewId) {
+        List<ReviewResponseDTO> review = reviewRepository.findReviewById(reviewId);
+
+        if(review.size() == 0) {
+            throw new ReviewNotFoundException();
+        }
+
+        return ReviewResponseDTO.of(review).get(0); // 리뷰는 한개 이므로 get(0)
+    }
+
     // 리뷰 평균 계산 크론탭
 //    @Scheduled(cron = "0 0 0/1 * * *") // 매 시간마다 실행
 //    public void reviewGradeUpdate() {
@@ -93,4 +98,5 @@ public class ReviewService {
 //            System.out.println("reuslt = " + reuslt);
 //        }
 //    }
+
 }

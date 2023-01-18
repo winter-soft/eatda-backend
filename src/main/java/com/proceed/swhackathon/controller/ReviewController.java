@@ -53,4 +53,11 @@ public class ReviewController {
         reviewService.deleteReview(reviewId, userId);
         return new ResponseDTO<>(HttpStatus.OK.value(), "OK");
     }
+
+    @GetMapping("/select/{reviewId}")
+    public ResponseDTO<?> selectByReviewId(@PathVariable Long reviewId) {
+
+        return new ResponseDTO<>(HttpStatus.OK.value(),
+                reviewService.findByReviewId(reviewId));
+    }
 }
