@@ -33,8 +33,8 @@ public class ReviewService {
     private final UserOrderDetailRepository userOrderDetailRepository;
 
     // storeId를 통해 리뷰를 조회
-    public List<ReviewResponseDTO> findByStoreId(Long storeId, int page) {
-        PageRequest pageRequest = PageRequest.of(page, 5);
+    public List<ReviewResponseDTO> findByStoreId(Long storeId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
 
         return ReviewResponseDTO.of(reviewRepository.findByStoreId(storeId, pageRequest));
     }

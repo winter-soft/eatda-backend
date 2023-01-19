@@ -29,10 +29,11 @@ public class ReviewController {
             notes = "GET Parameter로 page를 넘겨주면 해당 페이지의 댓글을 가져옵니다.")
     @GetMapping("/{storeId}")
     public ResponseDTO<?> selectByStoreId(@ApiParam(name = "storeId", value = "PathVariable로 넘겨주세요.", example = "1") @PathVariable Long storeId,
-                                          @ApiParam(name = "page", value = "RequestParam으로 넘겨주세요.", example = "23")@RequestParam(defaultValue = "0") Integer page) {
+                                          @ApiParam(name = "page", value = "RequestParam으로 넘겨주세요.", example = "23")@RequestParam(defaultValue = "0") int page,
+                                          @ApiParam(name = "size", value = "RequestParam으로 넘겨주세요.", example = "5")@RequestParam(required = true, defaultValue = "1") int size) {
 
         return new ResponseDTO<>(HttpStatus.OK.value(),
-                reviewService.findByStoreId(storeId, page));
+                reviewService.findByStoreId(storeId, page, size));
     }
 
     @ApiOperation(value = "DTO를 받아 리뷰를 생성해주는 API",
