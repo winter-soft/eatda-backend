@@ -5,6 +5,7 @@ import com.proceed.swhackathon.dto.menu.MenuNameDTO;
 import com.proceed.swhackathon.dto.review.ReviewResponseDTO;
 import com.proceed.swhackathon.model.QReview;
 import com.proceed.swhackathon.model.Review;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -36,16 +37,17 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     }
 
     @Override
-    public List<Double> reviewAvg() {
+    public List<Tuple> reviewAvg() {
 
-        List<Double> result = queryFactory
-                .select(review.star.avg())
+        return queryFactory
+                .select(
+                        order.store.id,
+                        review.star.avg())
                 .from(review)
                 .join(review.userOrderDetail, userOrderDetail)
                 .join(userOrderDetail.order, order)
                 .groupBy(order.store)
                 .fetch();
-        return result;
     }
 
     /**

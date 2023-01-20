@@ -2,6 +2,7 @@ package com.proceed.swhackathon.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proceed.swhackathon.dto.store.StoreInOrderDTO;
+import com.proceed.swhackathon.dto.user.UserInfoDTO;
 import com.proceed.swhackathon.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -24,7 +26,7 @@ public class OrderDTO {
 //    @JsonIgnore
     private StoreInOrderDTO store;
     private Destination destination;
-    private List<User> users;
+    private List<UserInfoDTO> users;
 
     public static OrderDTO entityToDTO(Order o, List<User> users){
         return OrderDTO.builder()
@@ -35,7 +37,9 @@ public class OrderDTO {
                 .endTime(o.getEndTime())
                 .store(StoreInOrderDTO.entityToDTO(o.getStore()))
                 .destination(o.getDestination())
-                .users(users)
+                .users(users.stream().map((x) -> {
+                    return new UserInfoDTO(x.getId(), x.getProfileImageUrl());
+                }).collect(Collectors.toList()))
                 .build();
     }
 }

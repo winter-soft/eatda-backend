@@ -51,6 +51,8 @@ public class Store extends TimeZone {
     @JsonIgnore
     private List<Likes> likes = new ArrayList<>();
 
+    private String grade; // 매장 평점
+
     // 메뉴 삭제
     public void removeMenu(){
         for(Menu m : menus){

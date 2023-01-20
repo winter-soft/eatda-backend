@@ -16,7 +16,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         log.info("CORS filter running...");
         registry.addMapping("/**")
-                .allowedOrigins("https://eat-da.com/")
+                .allowedOrigins("https://eat-da.com/", "http://eatda.wintersoft.kr/")
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.HEAD.name(),

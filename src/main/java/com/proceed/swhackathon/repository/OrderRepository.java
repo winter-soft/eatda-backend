@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface  OrderRepository extends JpaRepository<Order, Long> {
+public interface  OrderRepository extends JpaRepository<Order, Long>, OrderRepositoryCustom {
 
     @Query("select o from Order o join fetch o.store s where o.id = :id")
     Optional<Order> findOrderByIdWithStore(Long id);
@@ -39,8 +39,4 @@ public interface  OrderRepository extends JpaRepository<Order, Long> {
 
     @Query(value = "select * from ORDERS o where DATE_FORMAT(o.endTime, '%Y-%m-%d') = :dateTime", nativeQuery = true)
     List<Order> findAllByEndTimeAndStore(String dateTime);
-
-//    @EntityGraph(attributePaths = {"store", "destination"})
-//    @Query("select o from Order o where o.id = :id")
-//    Order findTestById(Long id);
 }
