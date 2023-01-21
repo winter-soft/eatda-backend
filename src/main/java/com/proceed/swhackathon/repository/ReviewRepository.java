@@ -13,6 +13,4 @@ import javax.persistence.EntityManager;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
 
-    @Query("select r from Review r join fetch r.userOrderDetail uod")
-    Slice<Review> findSliceReviewAll(Pageable pageable);
 }

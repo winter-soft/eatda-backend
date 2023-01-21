@@ -9,8 +9,5 @@ import java.util.List;
 
 public interface MenuOptionRepository extends JpaRepository<MenuOption, Long> {
 
-//    @Query("select m from MenuOption m where m = :menu_id")
-//    public List<MenuOption> findAllByMenu_id(Long menu_id);
-
     public List<MenuOption> findAllByMenuOptionTitle(MenuOptionTitle menuOptionTitle);
 }
