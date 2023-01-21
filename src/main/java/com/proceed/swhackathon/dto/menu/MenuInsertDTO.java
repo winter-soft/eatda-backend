@@ -15,12 +15,14 @@ public class MenuInsertDTO {
     private String name;
     private String imageUrl;
     private int price;
+    private String menuDetail;
 
     public Menu dtoToEntity(){
         return Menu.builder()
                 .name(name)
                 .imageUrl(imageUrl)
                 .price(price)
+                .menuDetail(menuDetail)
                 .visible(true)
                 .build();
     }

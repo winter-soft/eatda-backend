@@ -20,11 +20,12 @@ public class Menu extends TimeZone {
     @ManyToOne
     @JoinColumn(name = "store_id")
     @JsonIgnore
-    private Store store;
+    private Store store; // 가게 메뉴
 
-    private String name;
-    private String imageUrl;
-    private int price;
+    private String name; // 메뉴 이름
+    private String imageUrl; // 메뉴 사진
+    private int price; // 메뉴 가격
+    private String menuDetail; // 메뉴 설명
 
     private boolean visible = true; // 메뉴 보이게할건지 아닌지
 

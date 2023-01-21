@@ -97,6 +97,7 @@ public class MenuService {
         menu.setName(menuDTO.getName());
         menu.setPrice(menuDTO.getPrice());
         menu.setImageUrl(menuDTO.getImageUrl());
+        menu.setMenuDetail(menuDTO.getMenuDetail());
 
         return StoreDTO.entityToDTO(store);
     }

@@ -23,6 +23,7 @@ public class MenuDTO {
     private String name;
     private String imageUrl;
     private int price;
+    private String menuDetail;
     private boolean visible = true; // 메뉴 보이게할건지 아닌지
 
 
@@ -33,6 +34,7 @@ public class MenuDTO {
                 .name(m.getName())
                 .imageUrl(m.getImageUrl())
                 .price(m.getPrice())
+                .menuDetail(m.getMenuDetail())
                 .visible(true)
                 .build();
     }
