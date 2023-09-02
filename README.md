@@ -2,16 +2,10 @@
 
 대학교 기숙사생들을 위한 공동배달 서비스 : 잇다
 
-
-## API Doc
-http://api-eatda.wintersoft.kr/api/swagger-ui.html
-<br><br>
-## 최종 보고서
-[다운로드](https://github.com/ghdcksgml1/swhackathon-backend/files/9591769/_.-.pdf)
-<br><br>
 ## ERD
 
-<img width="983" alt="스크린샷 2022-08-15 오후 9 38 15" src="https://user-images.githubusercontent.com/79779676/185534395-65952145-55dc-4022-b72e-71a133b722e1.png">
+<img width="1684" alt="스크린샷 2023-09-03 오전 12 10 55" src="https://github.com/winter-soft/eatda-backend/assets/79779676/0730724d-ac0f-48eb-aa40-b562992395a9">
+
 
 ## 주문을 넣는 비즈니스 로직
 
